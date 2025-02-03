@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, shell } from 'electron';
+import { app, dialog, ipcMain } from 'electron';
 import log from 'electron-log/main';
 
 import { DEFAULT_SERVER_ARGS, ProgressStatus } from './constants';
@@ -17,28 +17,30 @@ import { type HasTelemetry, type ITelemetry, getTelemetry, promptMetricsConsent 
 import { DesktopConfig } from './store/desktopConfig';
 import { findAvailablePort } from './utils';
 
+interface FatalErrorOptions {
+  /** The message to display to the user.  Also used for logging if {@link logMessage} is not set. */
+  message: string;
+  /** The {@link Error} to log. */
+  error?: unknown;
+  /** The title of the error message box. */
+  title?: string;
+  /** If set, this replaces the {@link message} for logging. */
+  logMessage?: string;
+  /** The exit code to use when the app is exited. Default: 2 */
+  exitCode?: number;
+}
+
 export class DesktopApp implements HasTelemetry {
   readonly telemetry: ITelemetry = getTelemetry();
 
   constructor(
     private readonly appState: IAppState,
-    private readonly overrides: DevOverrides
+    private readonly overrides: DevOverrides,
+    private readonly config: DesktopConfig
   ) {}
 
   async start(): Promise<void> {
-    const { appState, overrides, telemetry } = this;
-
-    // Load config or exit
-    let store: DesktopConfig | undefined;
-    try {
-      store = await DesktopConfig.load(shell);
-      if (!store) throw new Error('Unknown error loading app config on startup.');
-    } catch (error) {
-      log.error('Unhandled exception during config load', error);
-      dialog.showErrorBox('User Data', `Unknown error whilst writing to user data folder:\n\n${error}`);
-      app.exit(20);
-      return;
-    }
+    const { appState, overrides, telemetry, config } = this;
 
     // Create native window
     const appWindow = new AppWindow();
@@ -79,7 +81,7 @@ export class DesktopApp implements HasTelemetry {
 
       // At this point, user has gone through the onboarding flow.
       SentryLogging.comfyDesktopApp = comfyDesktopApp;
-      const allowMetrics = await promptMetricsConsent(store, appWindow, comfyDesktopApp);
+      const allowMetrics = await promptMetricsConsent(config, appWindow, comfyDesktopApp);
       telemetry.hasConsent = allowMetrics;
       if (allowMetrics) telemetry.flush();
 
@@ -123,5 +125,22 @@ export class DesktopApp implements HasTelemetry {
         app.quit();
       }
     }
+  }
+
+  /**
+   * Quits the app gracefully after a fatal error.  Exits immediately if a code is provided.
+   *
+   * Logs the error and shows an error dialog to the user.
+   * @param options - The options for the error.
+   */
+  static fatalError({ message, error, title, logMessage, exitCode }: FatalErrorOptions): never {
+    const err = error ?? new Error(message);
+    log.error(logMessage ?? message, err);
+    if (title && message) dialog.showErrorBox(title, message);
+
+    if (exitCode) app.exit(exitCode);
+    else app.quit();
+    // Unreachable - library type is void instead of never.
+    throw new Error(message, { cause: err });
   }
 }
