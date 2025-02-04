@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/electron/main';
 import todesktop from '@todesktop/runtime';
-import { type TitleBarOverlayOptions, app, dialog, ipcMain } from 'electron';
+import { type TitleBarOverlayOptions, app, ipcMain } from 'electron';
 import log from 'electron-log/main';
 import path from 'node:path';
 import { graphics } from 'systeminformation';
@@ -104,17 +104,6 @@ export class ComfyDesktopApp implements HasTelemetry {
     ipcMain.on(IPC_CHANNELS.OPEN_DEV_TOOLS, () => {
       this.appWindow.openDevTools();
     });
-    ipcMain.on(
-      IPC_CHANNELS.RESTART_APP,
-      (event, { customMessage, delay }: { customMessage?: string; delay?: number }) => {
-        log.info('Received restart app message!');
-        if (customMessage) {
-          this.restart({ customMessage, delay });
-        } else {
-          this.restart({ delay });
-        }
-      }
-    );
 
     // Replace the reinstall IPC handler.
     ipcMain.removeHandler(IPC_CHANNELS.REINSTALL);
@@ -155,49 +144,5 @@ export class ComfyDesktopApp implements HasTelemetry {
     this.comfyServer = new ComfyServer(this.basePath, serverArgs, virtualEnvironment, this.appWindow, this.telemetry);
     await this.comfyServer.start();
     this.initializeTerminal(virtualEnvironment);
-  }
-
-  restart({ customMessage, delay }: { customMessage?: string; delay?: number } = {}): void {
-    function relaunchApplication(delay?: number) {
-      if (delay) {
-        log.info('Relaunching application in ', delay, 'ms');
-        setTimeout(() => {
-          app.relaunch();
-          app.quit();
-        }, delay);
-      } else {
-        app.relaunch();
-        app.quit();
-      }
-    }
-
-    log.info('Attempting to restart app with custom message: ', customMessage);
-
-    if (!customMessage) {
-      log.info('Skipping confirmation, restarting immediately');
-      return relaunchApplication(delay);
-    }
-
-    dialog
-      .showMessageBox({
-        type: 'question',
-        buttons: ['Yes', 'No'],
-        defaultId: 0,
-        title: 'Restart ComfyUI',
-        message: customMessage || 'Are you sure you want to restart ComfyUI?',
-        detail: 'The application will close and restart automatically.',
-      })
-      .then(({ response }) => {
-        if (response === 0) {
-          // "Yes" was clicked
-          log.info('User confirmed restart');
-          relaunchApplication(delay);
-        } else {
-          log.info('User cancelled restart');
-        }
-      })
-      .catch((error) => {
-        log.error('Error showing restart confirmation dialog:', error);
-      });
   }
 }
