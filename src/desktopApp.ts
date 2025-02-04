@@ -32,6 +32,7 @@ interface FatalErrorOptions {
 
 export class DesktopApp implements HasTelemetry {
   readonly telemetry: ITelemetry = getTelemetry();
+  readonly appWindow: AppWindow = new AppWindow();
 
   constructor(
     private readonly appState: IAppState,
@@ -39,30 +40,23 @@ export class DesktopApp implements HasTelemetry {
     private readonly config: DesktopConfig
   ) {}
 
+  /** Load start screen - basic spinner */
+  async showLoadingPage() {
+    try {
+      await this.appWindow.loadPage('desktop-start');
+    } catch (error) {
+      DesktopApp.fatalError({
+        error,
+        message: `Unknown error whilst loading start screen.\n\n${error}`,
+        title: 'Startup failed',
+      });
+    }
+  }
+
   async start(): Promise<void> {
-    const { appState, overrides, telemetry, config } = this;
+    const { appState, appWindow, overrides, telemetry, config } = this;
 
-    // Create native window
-    const appWindow = new AppWindow();
-
-    // Load start screen - basic spinner
-    try {
-      await appWindow.loadPage('desktop-start');
-    } catch (error) {
-      dialog.showErrorBox('Startup failed', `Unknown error whilst loading start screen.\n\n${error}`);
-      return app.quit();
-    }
-
-    try {
-      // Register basic handlers that are necessary during app's installation.
-      registerPathHandlers();
-      registerNetworkHandlers();
-      registerAppInfoHandlers(appWindow);
-      registerAppHandlers();
-    } catch (error) {
-      log.error('Fatal error occurred during app pre-startup.', error);
-      app.exit(2024);
-    }
+    this.registerIpcHandlers();
 
     try {
       // Install / validate installation is complete
@@ -121,6 +115,23 @@ export class DesktopApp implements HasTelemetry {
     }
   }
 
+  registerIpcHandlers() {
+    try {
+      // Register basic handlers that are necessary during app's installation.
+      registerPathHandlers();
+      registerNetworkHandlers();
+      registerAppInfoHandlers(this.appWindow);
+      registerAppHandlers();
+    } catch (error) {
+      DesktopApp.fatalError({
+        error,
+        message: 'Fatal error occurred during app pre-startup.',
+        title: 'Startup failed',
+        exitCode: 2024,
+      });
+    }
+  }
+
   /**
    * Quits the app gracefully after a fatal error.  Exits immediately if a code is provided.
    *
@@ -128,13 +139,13 @@ export class DesktopApp implements HasTelemetry {
    * @param options - The options for the error.
    */
   static fatalError({ message, error, title, logMessage, exitCode }: FatalErrorOptions): never {
-    const err = error ?? new Error(message);
-    log.error(logMessage ?? message, err);
+    const _error = error ?? new Error(message);
+    log.error(logMessage ?? message, _error);
     if (title && message) dialog.showErrorBox(title, message);
 
     if (exitCode) app.exit(exitCode);
     else app.quit();
     // Unreachable - library type is void instead of never.
-    throw new Error(message, { cause: err });
+    throw new Error(message, { cause: _error });
   }
 }
