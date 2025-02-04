@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/electron/main';
 import todesktop from '@todesktop/runtime';
 import { app, ipcMain } from 'electron';
 import log from 'electron-log/main';
-import path from 'node:path';
 import { graphics } from 'systeminformation';
 
 import { IPC_CHANNELS, ProgressStatus, ServerArgs } from '../constants';
@@ -19,8 +18,8 @@ export class ComfyDesktopApp implements HasTelemetry {
   public comfyServer: ComfyServer | null = null;
   private terminal: Terminal | null = null; // Only created after server starts.
   constructor(
-    public installation: ComfyInstallation,
-    public appWindow: AppWindow,
+    readonly installation: ComfyInstallation,
+    readonly appWindow: AppWindow,
     readonly telemetry: ITelemetry
   ) {}
 
@@ -32,14 +31,10 @@ export class ComfyDesktopApp implements HasTelemetry {
     return this.installation.basePath;
   }
 
-  get pythonInstallPath() {
-    return app.isPackaged ? this.basePath : path.join(app.getAppPath(), 'assets');
-  }
-
   public async initialize(): Promise<void> {
     this.registerIPCHandlers();
     this.initializeTodesktop();
-    await this.setupGPUContext();
+    await this.setSentryGpuContext();
   }
 
   initializeTodesktop(): void {
@@ -53,24 +48,7 @@ export class ComfyDesktopApp implements HasTelemetry {
     todesktop.autoUpdater?.setFeedURL('https://updater.comfy.org');
   }
 
-  private initializeTerminal(virtualEnvironment: VirtualEnvironment) {
-    this.terminal = new Terminal(this.appWindow, this.basePath, virtualEnvironment.uvPath);
-    this.terminal.write(virtualEnvironment.activateEnvironmentCommand());
-
-    ipcMain.handle(IPC_CHANNELS.TERMINAL_WRITE, (_event, command: string) => {
-      this.terminal?.write(command);
-    });
-
-    ipcMain.handle(IPC_CHANNELS.TERMINAL_RESIZE, (_event, cols: number, rows: number) => {
-      this.terminal?.resize(cols, rows);
-    });
-
-    ipcMain.handle(IPC_CHANNELS.TERMINAL_RESTORE, () => {
-      return this.terminal?.restore();
-    });
-  }
-
-  async setupGPUContext(): Promise<void> {
+  async setSentryGpuContext(): Promise<void> {
     log.debug('Setting up GPU context');
     try {
       const graphicsInfo = await graphics();
@@ -126,5 +104,22 @@ export class ComfyDesktopApp implements HasTelemetry {
     this.comfyServer = new ComfyServer(this.basePath, serverArgs, virtualEnvironment, this.appWindow, this.telemetry);
     await this.comfyServer.start();
     this.initializeTerminal(virtualEnvironment);
+  }
+
+  private initializeTerminal(virtualEnvironment: VirtualEnvironment) {
+    this.terminal = new Terminal(this.appWindow, this.basePath, virtualEnvironment.uvPath);
+    this.terminal.write(virtualEnvironment.activateEnvironmentCommand());
+
+    ipcMain.handle(IPC_CHANNELS.TERMINAL_WRITE, (_event, command: string) => {
+      this.terminal?.write(command);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.TERMINAL_RESIZE, (_event, cols: number, rows: number) => {
+      this.terminal?.resize(cols, rows);
+    });
+
+    ipcMain.handle(IPC_CHANNELS.TERMINAL_RESTORE, () => {
+      return this.terminal?.restore();
+    });
   }
 }
