@@ -53,6 +53,9 @@ export class InstallationManager {
       // Convert from old format
       if (state === 'upgraded') installation.upgradeConfig();
 
+      // Install updated manager requirements
+      await this.updateManagerPackages(installation);
+
       // Resolve issues and re-run validation
       if (installation.hasIssues) {
         while (!(await this.resolveIssues(installation))) {
@@ -286,6 +289,21 @@ export class InstallationManager {
 
     log.verbose('Resolution complete:', installation.validation);
     return isValid;
+  }
+
+  private async updateManagerPackages(installation: ComfyInstallation) {
+    if (installation.validation.managerPythonPackages !== 'warning') return;
+
+    const sendLogIpc = (data: string) => {
+      log.info(data);
+      this.appWindow.send(IPC_CHANNELS.LOG_MESSAGE, data);
+    };
+    await this.appWindow.loadPage('desktop-update');
+    await installation.virtualEnvironment.installComfyUIManagerRequirements({
+      onStdout: sendLogIpc,
+      onStderr: sendLogIpc,
+    });
+    await installation.validate();
   }
 
   static setReinstallHandler(installation: ComfyInstallation) {
