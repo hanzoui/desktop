@@ -76,12 +76,12 @@ export class AppWindow {
 
     this.window = new BrowserWindow({
       title: 'ComfyUI',
-      width: storedWidth,
-      height: storedHeight,
+      width: Math.max(storedWidth, 100),
+      height: Math.max(storedHeight, 100),
       minWidth: 640,
       minHeight: 640,
-      x: storedX,
-      y: storedY,
+      x: Math.min(Math.max(storedX ?? 0, 0), primaryDisplay.workAreaSize.width),
+      y: Math.min(Math.max(storedY ?? 0, 0), primaryDisplay.workAreaSize.height),
       webPreferences: {
         // eslint-disable-next-line unicorn/prefer-module
         preload: path.join(__dirname, '../build/preload.cjs'),
