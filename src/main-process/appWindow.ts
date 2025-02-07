@@ -19,6 +19,7 @@ import { URL } from 'node:url';
 import { ElectronError } from '@/infrastructure/electronError';
 import type { Page } from '@/infrastructure/interfaces';
 import type { IAppState } from '@/main-process/appState';
+import { clamp } from '@/utils';
 
 import { IPC_CHANNELS, ProgressStatus, ServerArgs } from '../constants';
 import { getAppResourcesPath } from '../install/resourcePaths';
@@ -55,16 +56,29 @@ export class AppWindow {
 
   public constructor(private readonly appState: IAppState) {
     const installed = useDesktopConfig().get('installState') === 'installed';
-    const primaryDisplay = screen.getPrimaryDisplay();
-    const { width, height } = installed ? primaryDisplay.workAreaSize : { width: 1024, height: 768 };
+    const { workAreaSize } = screen.getPrimaryDisplay();
+    const { width, height } = installed ? workAreaSize : { width: 1024, height: 768 };
     const store = this.loadWindowStore();
     this.store = store;
+
+    const minWidth = 640;
+    const minHeight = 640;
 
     // Retrieve stored window size, or use default if not available
     const storedWidth = store.get('windowWidth', width);
     const storedHeight = store.get('windowHeight', height);
     const storedX = store.get('windowX');
     const storedY = store.get('windowY');
+
+    // Clamp stored window size to primary display size
+    const clampedWidth = clamp(storedWidth, minWidth, workAreaSize.width);
+    const clampedHeight = clamp(storedHeight, minHeight, workAreaSize.height);
+
+    // Use window manager default behaviour if settings are invalid
+    const eitherUndefined = storedX === undefined || storedY === undefined;
+    // Ensure window is wholly contained within the primary display
+    const x = eitherUndefined ? undefined : clamp(storedX, 0, workAreaSize.width - clampedWidth);
+    const y = eitherUndefined ? undefined : clamp(storedY, 0, workAreaSize.height - clampedHeight);
 
     // macOS requires different handling to linux / win32
     const customChrome: Electron.BrowserWindowConstructorOptions = this.customWindowEnabled
@@ -76,12 +90,12 @@ export class AppWindow {
 
     this.window = new BrowserWindow({
       title: 'ComfyUI',
-      width: Math.max(storedWidth, 100),
-      height: Math.max(storedHeight, 100),
+      width: clampedWidth,
+      height: clampedHeight,
       minWidth: 640,
       minHeight: 640,
-      x: Math.min(Math.max(storedX ?? 0, 0), primaryDisplay.workAreaSize.width),
-      y: Math.min(Math.max(storedY ?? 0, 0), primaryDisplay.workAreaSize.height),
+      x,
+      y,
       webPreferences: {
         // eslint-disable-next-line unicorn/prefer-module
         preload: path.join(__dirname, '../build/preload.cjs'),
