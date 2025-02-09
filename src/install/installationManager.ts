@@ -1,8 +1,6 @@
 import { Notification, app, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log/main';
 
-import { ComfySettings } from '@/config/comfySettings';
-
 import { IPC_CHANNELS, ProgressStatus } from '../constants';
 import type { AppWindow } from '../main-process/appWindow';
 import { ComfyInstallation } from '../main-process/comfyInstallation';
@@ -238,9 +236,7 @@ export class InstallationManager implements HasTelemetry {
       useDesktopConfig().set('migrateCustomNodesFrom', installWizard.migrationSource);
     }
 
-    const comfySettings = new ComfySettings(installWizard.basePath);
-    await comfySettings.loadSettings();
-    const installation = new ComfyInstallation('started', installWizard.basePath, this.telemetry, comfySettings);
+    const installation = new ComfyInstallation('started', installWizard.basePath, this.telemetry);
     InstallationManager.setReinstallHandler(installation);
     const { virtualEnvironment } = installation;
 
