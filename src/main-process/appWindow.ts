@@ -324,8 +324,7 @@ export class AppWindow {
 
   private setupAppEvents(): void {
     app.on('second-instance', (event, commandLine, workingDirectory, additionalData) => {
-      log.info('Received second instance message!');
-      log.info(additionalData);
+      log.info('Received second instance message!', additionalData);
 
       if (this.isMinimized()) this.restore();
       this.focus();
@@ -352,7 +351,7 @@ export class AppWindow {
       while (this.messageQueue.length > 0) {
         const message = this.messageQueue.shift();
         if (message) {
-          log.info('Sending queued message ', message.channel, message.data);
+          log.info('Sending queued message', message);
           this.window.webContents.send(message.channel, message.data);
         }
       }

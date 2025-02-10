@@ -250,26 +250,26 @@ export class VirtualEnvironment implements HasTelemetry {
         this.telemetry.track(`install_flow:virtual_environment_create_end`, {
           reason: 'already_exists',
         });
-        log.info(`Virtual environment already exists at ${this.venvPath}`);
+        log.info('Virtual environment already exists at', this.venvPath);
         return;
       }
 
       await this.createVenvWithPython(callbacks);
       await this.ensurePip(callbacks);
       await this.installRequirements(callbacks);
-      this.telemetry.track(`install_flow:virtual_environment_create_end`, {
+      this.telemetry.track('install_flow:virtual_environment_create_end', {
         reason: 'success',
       });
-      log.info(`Successfully created virtual environment at ${this.venvPath}`);
+      log.info('Successfully created virtual environment at', this.venvPath);
     } catch (error) {
       const sentryUrl = captureSentryException(error instanceof Error ? error : new Error(String(error)));
-      this.telemetry.track(`install_flow:virtual_environment_create_error`, {
+      this.telemetry.track('install_flow:virtual_environment_create_error', {
         error_name: error instanceof Error ? error.name : 'UnknownError',
         error_type: error instanceof Error ? error.constructor.name : typeof error,
         error_message: error instanceof Error ? error.message : 'Unknown error occurred',
         sentry_url: sentryUrl,
       });
-      log.error(`Error creating virtual environment: ${error}`);
+      log.error('Error creating virtual environment:', error);
       throw error;
     }
   }
@@ -366,8 +366,9 @@ export class VirtualEnvironment implements HasTelemetry {
    */
   private async runUvCommandAsync(args: string[], callbacks?: ProcessCallbacks): Promise<{ exitCode: number | null }> {
     const uvCommand = os.platform() === 'win32' ? `& "${this.uvPath}"` : this.uvPath;
-    log.info(`Running uv command: ${uvCommand} ${args.join(' ')}`);
-    return this.runPtyCommandAsync(`${uvCommand} ${args.map((a) => `"${a}"`).join(' ')}`, callbacks?.onStdout);
+    const command = `${uvCommand} ${args.map((a) => `"${a}"`).join(' ')}`;
+    log.info('Running uv command:', command);
+    return this.runPtyCommandAsync(command, callbacks?.onStdout);
   }
 
   private async runPtyCommandAsync(command: string, onData?: (data: string) => void): Promise<{ exitCode: number }> {
@@ -601,7 +602,7 @@ export class VirtualEnvironment implements HasTelemetry {
     try {
       await this.#using(() => this.manualInstall(callbacks));
     } catch (error) {
-      log.error(`Failed to reinstall requirements: ${error}`);
+      log.error('Failed to reinstall requirements:', error);
 
       const created = await this.createVenv(onData);
       if (!created) return false;
