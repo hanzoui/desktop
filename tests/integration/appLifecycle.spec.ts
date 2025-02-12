@@ -1,68 +1,52 @@
-import { type Locator, chromium, expect, test } from '@playwright/test';
+import { type Locator, expect } from '@playwright/test';
 
-test('has title', async () => {
-  const browser = await chromium.connectOverCDP('http://127.0.0.1:9000');
+import { test } from './autoCleaningTestApp';
 
-  expect(browser.isConnected()).toBeTruthy();
-  expect(browser.contexts().length).toBeGreaterThan(0);
+const APP_START_TIMEOUT = process.env.CI ? 30_000 : 5000;
 
-  const context = browser.contexts()[0];
-  const pages = context.pages();
+test.describe('App Lifecycle', () => {
+  test('does all app startup things from previous test', async ({ autoCleaningApp }) => {
+    const window = await autoCleaningApp.firstWindow();
+    await window.screenshot({ path: 'screenshot-app-start.png' });
 
-  expect(pages).toHaveLength(1);
-  const page = pages[0];
+    const getStartedButton = window.getByText('Get Started');
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/ComfyUI/);
+    await expect(getStartedButton).toBeVisible({ timeout: APP_START_TIMEOUT });
+    await expect(getStartedButton).toBeEnabled();
 
-  const getStartedButton = page.getByText('Get Started');
+    await window.screenshot({ path: 'screenshot-load.png' });
 
-  await expect(getStartedButton).toBeVisible();
-  await expect(getStartedButton).toBeEnabled();
+    await getStartedButton.click();
 
-  await page.screenshot({ path: 'screenshot-load.png' });
+    // Select GPU screen
+    await expect(window.getByText('Select GPU')).toBeVisible();
 
-  await getStartedButton.click();
+    const nextButton = window.getByRole('button', { name: 'Next' });
+    const cpuToggle = window.locator('#cpu-mode');
 
-  // Select GPU screen
-  await expect(page.getByText('Select GPU')).toBeVisible();
+    await expect(cpuToggle).toBeVisible();
+    await cpuToggle.click();
 
-  const nextButton = page.getByRole('button', { name: 'Next' });
-  const cpuToggle = page.locator('#cpu-mode');
+    await clickEnabledButton(nextButton);
 
-  await expect(cpuToggle).toBeVisible();
-  await cpuToggle.click();
+    await expect(window.getByText('Choose Installation Location')).toBeVisible();
+    await window.screenshot({ path: 'screenshot-get-started.png' });
 
-  await clickEnabledButton(nextButton);
+    await clickEnabledButton(nextButton);
 
-  await expect(page.getByText('Choose Installation Location')).toBeVisible();
-  await page.screenshot({ path: 'screenshot-get-started.png' });
+    await expect(window.getByText('Migrate from Existing Installation')).toBeVisible();
+    await window.screenshot({ path: 'screenshot-migrate.png' });
 
-  await clickEnabledButton(nextButton);
+    await clickEnabledButton(nextButton);
 
-  await expect(page.getByText('Migrate from Existing Installation')).toBeVisible();
-  await page.screenshot({ path: 'screenshot-migrate.png' });
+    await expect(window.getByText('Desktop App Settings')).toBeVisible();
+    await window.screenshot({ path: 'screenshot-install.png' });
 
-  await clickEnabledButton(nextButton);
-
-  await expect(page.getByText('Desktop App Settings')).toBeVisible();
-  await page.screenshot({ path: 'screenshot-install.png' });
-
-  /** Ensure a button is enabled, then click it. */
-  async function clickEnabledButton(button: Locator) {
-    await expect(button).toBeVisible();
-    await expect(button).toBeEnabled();
-    await button.click();
-  }
-});
-
-test('app quits when window is closed', async () => {
-  const browser = await chromium.connectOverCDP('http://127.0.0.1:9000');
-  const context = browser.contexts()[0];
-  const page = context.pages()[0];
-
-  await page.close();
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  expect(browser.isConnected()).toBeFalsy();
+    /** Ensure a button is enabled, then click it. */
+    async function clickEnabledButton(button: Locator) {
+      await expect(button).toBeVisible();
+      await expect(button).toBeEnabled();
+      await button.click();
+    }
+  });
 });

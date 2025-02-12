@@ -1,21 +1,22 @@
-import { spawn } from 'node:child_process';
+import { rename } from 'node:fs/promises';
+
+import { FilePermission, addRandomSuffix, getComfyUIAppDataPath, pathExists } from './tests/shared/utils';
 
 async function globalSetup() {
-  console.log('Playwright globalSetup called');
+  console.log('+ Playwright globalSetup called');
+  if (process.env.CI) return;
 
-  return new Promise<void>((resolve, reject) => {
-    const electron = spawn('node', ['./scripts/launchCI.js']);
+  const appDataPath = getComfyUIAppDataPath();
+  await backupByRenaming(appDataPath);
+}
 
-    electron.on('close', () => {
-      reject(new Error('process failed to start'));
-    });
+async function backupByRenaming(appDataPath: string) {
+  if (!(await pathExists(appDataPath, FilePermission.Writable))) return;
 
-    electron.stdout.on('data', (data: string | Buffer) => {
-      if (data.includes('App ready')) {
-        resolve();
-      }
-    });
-  });
+  const newPath = addRandomSuffix(appDataPath);
+  console.warn(`AppData exists! Moving ${appDataPath} to ${newPath}. Remove manually if you do not require it.`);
+  await rename(appDataPath, newPath);
+  return newPath;
 }
 
 export default globalSetup;
