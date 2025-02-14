@@ -1,24 +1,15 @@
-import { type ElectronApplication, test as baseTest } from '@playwright/test';
+import { type ElectronApplication } from '@playwright/test';
 import electronPath from 'electron';
 import { _electron as electron } from 'playwright';
+
+import { TestEnvironment } from './testEnvironment';
 
 // eslint-disable-next-line @typescript-eslint/no-base-to-string
 const executablePath = String(electronPath);
 
-const isCI = !!process.env.CI;
-
-// Extend the base test
-export const test = baseTest.extend<{ app: TestApp }>({
-  app: async ({}, use) => {
-    // Launch Electron app.
-    await using app = await TestApp.create();
-    await use(app);
-  },
-});
-
 // Local testing QoL
 async function localTestQoL(app: ElectronApplication) {
-  if (isCI) return;
+  if (process.env.CI) return;
 
   // Get the first window that the app opens, wait if necessary.
   const window = await app.firstWindow();
@@ -30,7 +21,15 @@ async function localTestQoL(app: ElectronApplication) {
  * Base class for desktop e2e tests.
  */
 export class TestApp implements AsyncDisposable {
-  protected constructor(readonly app: ElectronApplication) {}
+  /** The test environment. */
+  readonly testEnvironment: TestEnvironment = new TestEnvironment();
+
+  /** Remove the install directory when disposed. */
+  shouldDisposeTestEnvironment: boolean = false;
+
+  private constructor(readonly app: ElectronApplication) {
+    app.once('close', () => (this.#appProcessTerminated = true));
+  }
 
   /** Async static factory */
   static async create() {
@@ -54,8 +53,29 @@ export class TestApp implements AsyncDisposable {
     return app;
   }
 
-  /** Dispose: close the app. */
+  /** Relies on the app exiting on its own. */
+  async close() {
+    if (this.#appProcessTerminated) return;
+
+    const windows = this.app.windows();
+    if (windows.length === 0) return;
+
+    const close = this.app.waitForEvent('close');
+    await Promise.all(windows.map((x) => x.close()));
+    await close;
+  }
+
+  #appProcessTerminated = false;
+
+  /** Ensure the app is disposed only once. */
+  #disposed = false;
+
+  /** Dispose: close the app and all disposable objects. */
   async [Symbol.asyncDispose](): Promise<void> {
-    await this.app[Symbol.asyncDispose]();
+    if (this.#disposed) return;
+    this.#disposed = true;
+
+    await this.close();
+    if (this.shouldDisposeTestEnvironment) await this.testEnvironment.deleteEverything();
   }
 }
