@@ -1,6 +1,4 @@
-import { expect } from '@playwright/test';
-
-import { test } from '../testExtensions';
+import { expect, test } from '../testExtensions';
 
 test.describe('Install Wizard', () => {
   test('can click through first time installer', async ({ installWizard, window, attachScreenshot }) => {
@@ -13,7 +11,7 @@ test.describe('Install Wizard', () => {
     await installWizard.clickGetStarted();
 
     // Select GPU screen
-    await expect(window.getByText('Select GPU')).toBeVisible();
+    await expect(installWizard.selectGpuTitle).toBeVisible();
     await expect(installWizard.cpuToggle).toBeVisible();
     await expect(window).toHaveScreenshot('select-gpu.png');
     await installWizard.cpuToggle.click();
@@ -22,15 +20,15 @@ test.describe('Install Wizard', () => {
     await installWizard.clickNext();
 
     // Install stepper screens
-    await expect(window.getByText('Choose Installation Location')).toBeVisible();
-    await expect(window).toHaveScreenshot('choose-installation-location.png');
+    await expect(installWizard.installLocationTitle).toBeVisible();
+    await expect.soft(window).toHaveScreenshot('choose-installation-location.png');
     await installWizard.clickNext();
 
-    await expect(window.getByText('Migrate from Existing Installation')).toBeVisible();
+    await expect(installWizard.migrateTitle).toBeVisible();
     await expect(window).toHaveScreenshot('migrate-from-existing-installation.png');
     await installWizard.clickNext();
 
-    await expect(window.getByText('Desktop App Settings')).toBeVisible();
+    await expect(installWizard.desktopSettingsTitle).toBeVisible();
     await expect(window).toHaveScreenshot('desktop-app-settings.png');
   });
 });
