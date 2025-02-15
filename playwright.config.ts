@@ -18,7 +18,7 @@ export default defineConfig<DesktopTestOptions>({
   // This is a desktop app; sharding is required to run tests in parallel.
   workers: 1,
   // GitHub reporter in CI, dot reporter for local development.
-  reporter: env.CI ? 'github' : 'dot',
+  reporter: env.CI ? [['github'], ['html', { open: 'never', outputFolder: 'test-results/html' }], ['list']] : 'dot',
   // Test times are already recorded. This feature does not allow exceptions.
   reportSlowTests: null,
   // Capture trace, screenshots, and video on first retry in CI.
@@ -39,6 +39,7 @@ export default defineConfig<DesktopTestOptions>({
       // Setup project: this installs the app with default settings, providing a common base state for post-install tests
       name: 'post-install-setup',
       testMatch: ['post-install.setup.ts'],
+      dependencies: ['install'],
       teardown: 'post-install-teardown',
     },
     {
