@@ -10,8 +10,6 @@ export default defineConfig({
   testDir: './tests/integration',
   /* Run local instance before starting the tests */
   globalSetup: './playwright.setup',
-  // Per-test timeout - 60 sec
-  timeout: 60_000,
   // Entire test suite timeout - 1 hour
   globalTimeout: 60 * 60 * 1000,
   // This is a desktop app; sharding is required to run tests in parallel.
@@ -26,4 +24,19 @@ export default defineConfig({
     trace: 'on-first-retry',
     video: 'on-first-retry',
   },
+  projects: [
+    {
+      name: 'install',
+      testMatch: ['install/**/*.spec.ts', 'shared/**/*.spec.ts'],
+      // Per-test timeout - 60 sec
+      timeout: 60_000,
+    },
+    {
+      name: 'post-install',
+      testMatch: ['post-install/**/*.spec.ts', 'shared/**/*.spec.ts'],
+      // Per-test timeout - 60 sec
+      timeout: 60_000,
+      dependencies: ['install'],
+    },
+  ],
 });
