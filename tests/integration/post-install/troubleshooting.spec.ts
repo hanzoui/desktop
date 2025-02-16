@@ -7,10 +7,6 @@ test.describe('Troubleshooting - broken install path', () => {
     await app.testEnvironment.breakInstallPath();
   });
 
-  test.afterEach(async ({ app }) => {
-    await app.testEnvironment.restoreInstallPath();
-  });
-
   test('Troubleshooting page loads when base path is invalid', async ({ troubleshooting, window }) => {
     await troubleshooting.expectReady();
     await expect(troubleshooting.basePathCard.rootEl).toBeVisible();
@@ -40,14 +36,10 @@ test.describe('Troubleshooting - broken install path', () => {
     }, filePath);
 
     await basePathCard.button.click();
-    await expect(basePathCard.buttonLoading).toBeVisible();
+    await expect(basePathCard.isRunningIndicator).toBeVisible();
     await expect(window).toHaveScreenshot('troubleshooting-base-path.png');
 
     // Base path fixed - server should start
-    const expectServerStarts = async () => await expect(serverStart.status.get()).resolves.not.toBe('unknown');
-    await expect(expectServerStarts).toPass({
-      timeout: 30 * 1000,
-      intervals: [500],
-    });
+    await serverStart.expectServerStarts();
   });
 });
