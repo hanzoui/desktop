@@ -1,4 +1,5 @@
 import { type Page, type TestInfo, test as baseTest } from '@playwright/test';
+import path from 'node:path';
 import { env } from 'node:process';
 import { pathExists } from 'tests/shared/utils';
 
@@ -7,6 +8,7 @@ import { TestGraphCanvas } from './testGraphCanvas';
 import { TestInstallWizard } from './testInstallWizard';
 import { TestInstalledApp } from './testInstalledApp';
 import { TestServerStart } from './testServerStart';
+import { TestTroubleshooting } from './testTroubleshooting';
 
 export { expect } from '@playwright/test';
 
@@ -16,9 +18,9 @@ export function assertPlaywrightEnabled() {
   throw new Error('COMFYUI_ENABLE_VOLATILE_TESTS must be set to "1"  to run tests.');
 }
 
-async function attachIfExists(testInfo: TestInfo, path: string) {
-  if (await pathExists(path)) {
-    await testInfo.attach('main.log', { path });
+async function attachIfExists(testInfo: TestInfo, fullPath: string) {
+  if (await pathExists(fullPath)) {
+    await testInfo.attach(path.basename(fullPath), { path: fullPath });
   }
 }
 
@@ -32,6 +34,8 @@ interface DesktopTestFixtures {
   app: TestApp;
   /** The main window of the app. A normal Playwright page. */
   window: Page;
+  /** The desktop troubleshooting screen. */
+  troubleshooting: TestTroubleshooting;
   /** The desktop install wizard. */
   installWizard: TestInstallWizard;
   /** The server start screen. */
@@ -68,6 +72,10 @@ export const test = baseTest.extend<DesktopTestOptions & DesktopTestFixtures>({
   installedApp: async ({ window }, use) => {
     const installedApp = new TestInstalledApp(window);
     await use(installedApp);
+  },
+  troubleshooting: async ({ window }, use) => {
+    const troubleshooting = new TestTroubleshooting(window);
+    await use(troubleshooting);
   },
 
   // Views
