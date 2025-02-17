@@ -28,45 +28,35 @@ export class ComfyServer implements HasTelemetry {
    */
   public static readonly CHECK_INTERVAL = 1000; // Check every second
 
-  private comfyServerProcess: ChildProcess | null = null;
-
-  constructor(
-    public basePath: string,
-    public serverArgs: ServerArgs,
-    public virtualEnvironment: VirtualEnvironment,
-    public appWindow: AppWindow,
-    readonly telemetry: ITelemetry
-  ) {}
-
-  get baseUrl() {
-    return `http://${this.serverArgs.listen}:${this.serverArgs.port}`;
-  }
-
-  /**
-   * The path to the ComfyUI main python script.
-   */
-  get mainScriptPath() {
-    return path.join(getAppResourcesPath(), 'ComfyUI', 'main.py');
-  }
+  /** The path to the ComfyUI main python script. */
+  readonly mainScriptPath = path.join(getAppResourcesPath(), 'ComfyUI', 'main.py');
 
   /**
    * The path to the ComfyUI web root. This directory should host compiled
    * ComfyUI web assets.
    */
-  get webRootPath() {
-    return path.join(getAppResourcesPath(), 'ComfyUI', 'web_custom_versions', 'desktop_app');
+  readonly webRootPath = path.join(getAppResourcesPath(), 'ComfyUI', 'web_custom_versions', 'desktop_app');
+
+  readonly userDirectoryPath: string;
+  readonly inputDirectoryPath: string;
+  readonly outputDirectoryPath: string;
+
+  private comfyServerProcess: ChildProcess | null = null;
+
+  constructor(
+    readonly basePath: string,
+    readonly serverArgs: ServerArgs,
+    readonly virtualEnvironment: VirtualEnvironment,
+    readonly appWindow: AppWindow,
+    readonly telemetry: ITelemetry
+  ) {
+    this.userDirectoryPath = path.join(this.basePath, 'user');
+    this.inputDirectoryPath = path.join(this.basePath, 'input');
+    this.outputDirectoryPath = path.join(this.basePath, 'output');
   }
 
-  get userDirectoryPath() {
-    return path.join(this.basePath, 'user');
-  }
-
-  get inputDirectoryPath() {
-    return path.join(this.basePath, 'input');
-  }
-
-  get outputDirectoryPath() {
-    return path.join(this.basePath, 'output');
+  get baseUrl() {
+    return `http://${this.serverArgs.listen}:${this.serverArgs.port}`;
   }
 
   /**
@@ -84,21 +74,24 @@ export class ComfyServer implements HasTelemetry {
     };
   }
 
-  static buildLaunchArgs(mainScriptPath: string, args: Record<string, string>) {
-    return [
-      mainScriptPath,
-      ...Object.entries(args)
-        .flatMap(([key, value]) => [`--${key}`, value])
-        // Empty string values are ignored. e.g. { cpu: '' } => '--cpu'
-        .filter((value: string) => value !== ''),
-    ];
+  /**
+   * Builds CLI arguments from an object of key-value pairs.
+   * @param args Object key-value pairs of CLI arguments.
+   * @returns A string array of CLI arguments.
+   */
+  static buildLaunchArgs(args: Record<string, string>) {
+    // Empty string values are ignored. e.g. { cpu: '' } => '--cpu'
+    return Object.entries(args)
+      .flatMap(([key, value]) => [`--${key}`, value])
+      .filter((value) => value !== '');
   }
 
   get launchArgs() {
-    return ComfyServer.buildLaunchArgs(this.mainScriptPath, {
+    const args = ComfyServer.buildLaunchArgs({
       ...this.coreLaunchArgs,
       ...this.serverArgs,
     });
+    return [this.mainScriptPath, ...args];
   }
 
   @trackEvent('comfyui:server_start')
@@ -133,7 +126,7 @@ export class ComfyServer implements HasTelemetry {
           log.error(`Python process exited with code ${code} and signal ${signal}`);
           reject(new Error(`Python process exited with code ${code} and signal ${signal}`));
         } else {
-          log.info(`Python process exited successfully with code ${code}`);
+          log.info(`Python process exited successfully`);
           resolve();
         }
       });
@@ -151,7 +144,7 @@ export class ComfyServer implements HasTelemetry {
         })
         .catch((error) => {
           log.error('Server failed to start:', error);
-          reject(new Error('Python Server Failed To Start Within Timeout.'));
+          reject(new Error('Python server failed to start within timeout.'));
         });
     });
   }
