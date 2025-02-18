@@ -1,4 +1,4 @@
-import { app, dialog } from 'electron';
+import { app, dialog, ipcMain } from 'electron';
 import log from 'electron-log/main';
 
 import { ProgressStatus } from './constants';
@@ -9,6 +9,7 @@ import { registerNetworkHandlers } from './handlers/networkHandlers';
 import { registerPathHandlers } from './handlers/pathHandlers';
 import type { FatalErrorOptions } from './infrastructure/interfaces';
 import { InstallationManager } from './install/installationManager';
+import { Troubleshooting } from './install/troubleshooting';
 import type { IAppState } from './main-process/appState';
 import { AppWindow } from './main-process/appWindow';
 import { ComfyDesktopApp } from './main-process/comfyDesktopApp';
@@ -21,6 +22,9 @@ import { DesktopConfig } from './store/desktopConfig';
 export class DesktopApp implements HasTelemetry {
   readonly telemetry: ITelemetry = getTelemetry();
   readonly appWindow: AppWindow;
+
+  comfyDesktopApp?: ComfyDesktopApp;
+  installation?: ComfyInstallation;
 
   constructor(
     private readonly appState: IAppState,
@@ -74,25 +78,27 @@ export class DesktopApp implements HasTelemetry {
   }
 
   async start(): Promise<void> {
-    const { appWindow, overrides, telemetry } = this;
+    const { appState, appWindow, overrides, telemetry } = this;
 
-    this.registerIpcHandlers();
+    if (!appState.ipcRegistered) this.registerIpcHandlers();
 
     const installation = await this.initializeInstallation();
     if (!installation) return;
+    this.installation = installation;
 
     // At this point, user has gone through the onboarding flow.
     await this.initializeTelemetry(installation);
 
     try {
       // Initialize app
-      const comfyDesktopApp = new ComfyDesktopApp(installation, appWindow, telemetry);
+      this.comfyDesktopApp ??= new ComfyDesktopApp(installation, appWindow, telemetry);
+      const { comfyDesktopApp } = this;
 
       // Construct core launch args
       const serverArgs = await comfyDesktopApp.buildServerArgs(overrides);
 
       // Start server
-      if (!overrides.useExternalServer) {
+      if (!overrides.useExternalServer && !comfyDesktopApp.serverRunning) {
         try {
           await comfyDesktopApp.startComfyServer(serverArgs);
         } catch (error) {
@@ -104,6 +110,9 @@ export class DesktopApp implements HasTelemetry {
       }
       appWindow.sendServerStartProgress(ProgressStatus.READY);
       await appWindow.loadComfyUI(serverArgs);
+
+      // App start complete
+      appState.emitLoaded();
     } catch (error) {
       log.error('Unhandled exception during app startup', error);
       appWindow.sendServerStartProgress(ProgressStatus.ERROR);
@@ -118,19 +127,45 @@ export class DesktopApp implements HasTelemetry {
     }
   }
 
-  registerIpcHandlers() {
+  private registerIpcHandlers() {
+    this.appState.emitIpcRegistered();
+
     try {
       // Register basic handlers that are necessary during app's installation.
       registerPathHandlers();
       registerNetworkHandlers();
       registerAppInfoHandlers(this.appWindow);
       registerAppHandlers();
+
+      ipcMain.handle(IPC_CHANNELS.START_TROUBLESHOOTING, async () => await this.showTroubleshootingPage());
     } catch (error) {
       DesktopApp.fatalError({
         error,
         message: 'Fatal error occurred during app pre-startup.',
         title: 'Startup failed',
         exitCode: 2024,
+      });
+    }
+  }
+
+  async showTroubleshootingPage() {
+    try {
+      if (!this.installation) throw new Error('Cannot troubleshoot before installation is complete.');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      using troubleshooting = new Troubleshooting(this.installation, this.appWindow);
+
+      if (!this.appState.loaded) {
+        await this.appWindow.loadPage('maintenance');
+      }
+      await new Promise((resolve) => ipcMain.handleOnce(IPC_CHANNELS.COMPLETE_VALIDATION, resolve));
+
+      await this.start();
+    } catch (error) {
+      DesktopApp.fatalError({
+        error,
+        message: `An error was detected, but the troubleshooting page could not be loaded. The app will close now. Please reinstall if this issue persists.`,
+        title: 'Critical error',
+        exitCode: 2001,
       });
     }
   }
