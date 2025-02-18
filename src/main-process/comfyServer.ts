@@ -15,6 +15,15 @@ import { rotateLogFiles } from '../utils';
 import { VirtualEnvironment } from '../virtualEnvironment';
 import { AppWindow } from './appWindow';
 
+/**
+ * A class that manages the ComfyUI server.
+ *
+ * This class is responsible for starting and stopping the ComfyUI server,
+ * as well as handling the server's lifecycle events.
+ *
+ * isRunning: The server process is running.
+ * timedOutWhilstStarting: The server process failed to start within the timeout. The process may still be running.
+ */
 export class ComfyServer implements HasTelemetry {
   /**
    * The maximum amount of time to wait for the server to start.
@@ -41,6 +50,9 @@ export class ComfyServer implements HasTelemetry {
   readonly inputDirectoryPath: string;
   readonly outputDirectoryPath: string;
 
+  /** Whether the server failed to report started within the start timeout. */
+  timedOutWhilstStarting = false;
+
   private comfyServerProcess: ChildProcess | null = null;
 
   constructor(
@@ -53,6 +65,11 @@ export class ComfyServer implements HasTelemetry {
     this.userDirectoryPath = path.join(this.basePath, 'user');
     this.inputDirectoryPath = path.join(this.basePath, 'input');
     this.outputDirectoryPath = path.join(this.basePath, 'output');
+  }
+
+  /** Whether the server is expected to be running. */
+  get isRunning() {
+    return !!this.comfyServerProcess;
   }
 
   get baseUrl() {
@@ -96,6 +113,12 @@ export class ComfyServer implements HasTelemetry {
 
   @trackEvent('comfyui:server_start')
   async start() {
+    if (this.isRunning) {
+      const message = 'ComfyUI server is already running';
+      log.error(message);
+      throw new Error(message);
+    }
+
     ComfySettings.lockWrites();
     await ComfyServerConfig.addAppBundledCustomNodesToConfig();
     await rotateLogFiles(app.getPath('logs'), 'comfyui', 50);
@@ -105,6 +128,7 @@ export class ComfyServer implements HasTelemetry {
 
       comfyUILog.transports.file.transforms.unshift(removeAnsiCodesTransform);
 
+      this.timedOutWhilstStarting = false;
       const comfyServerProcess = this.virtualEnvironment.runPythonCommand(this.launchArgs, {
         onStdout: (data) => {
           comfyUILog.info(data);
@@ -116,12 +140,15 @@ export class ComfyServer implements HasTelemetry {
         },
       });
 
-      comfyServerProcess.on('error', (err) => {
+      const rejectOnError = (err: Error) => {
+        this.comfyServerProcess = null;
         log.error('Failed to start ComfyUI:', err);
         reject(err);
-      });
+      };
+      comfyServerProcess.on('error', rejectOnError);
 
       comfyServerProcess.on('exit', (code, signal) => {
+        this.comfyServerProcess = null;
         if (code !== 0) {
           log.error(`Python process exited with code ${code} and signal ${signal}`);
           reject(new Error(`Python process exited with code ${code} and signal ${signal}`));
@@ -140,10 +167,12 @@ export class ComfyServer implements HasTelemetry {
       })
         .then(() => {
           log.info('Python server is ready');
+          comfyServerProcess.off('error', rejectOnError);
           resolve();
         })
         .catch((error) => {
-          log.error('Server failed to start:', error);
+          this.timedOutWhilstStarting = true;
+          log.error('Server failed to start within timeout:', error);
           reject(new Error('Python server failed to start within timeout.'));
         });
     });
@@ -164,10 +193,8 @@ export class ComfyServer implements HasTelemetry {
       }, 10_000);
 
       // Listen for the 'exit' event
-      this.comfyServerProcess.once('exit', (code, signal) => {
+      this.comfyServerProcess.once('exit', () => {
         clearTimeout(timeout);
-        log.info(`Python server exited with code ${code} and signal ${signal}`);
-        this.comfyServerProcess = null;
         resolve();
       });
 
