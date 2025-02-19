@@ -1,11 +1,13 @@
 import { ipcMain } from 'electron';
 import log from 'electron-log/main';
 
+import { ComfyServerConfig } from '@/config/comfyServerConfig';
 import { IPC_CHANNELS } from '@/constants';
 import type { AppWindow } from '@/main-process/appWindow';
 import type { ComfyInstallation } from '@/main-process/comfyInstallation';
 import type { InstallValidation } from '@/preload';
 import { getTelemetry } from '@/services/telemetry';
+import { useDesktopConfig } from '@/store/desktopConfig';
 
 /**
  * IPC handler for troubleshooting / maintenance tasks.
@@ -17,7 +19,9 @@ export class Troubleshooting implements Disposable {
 
   constructor(
     private readonly installation: ComfyInstallation,
-    private readonly appWindow: AppWindow
+    private readonly appWindow: AppWindow,
+    /** Called when an install-fixing task has finished. */
+    readonly onInstallFix?: () => Promise<unknown>
   ) {
     this.#setOnUpdateCallback();
     this.#addIpcHandlers();
@@ -45,22 +49,34 @@ export class Troubleshooting implements Disposable {
       this.appWindow.send(IPC_CHANNELS.LOG_MESSAGE, data);
     };
 
+    // Get validation state
     ipcMain.handle(IPC_CHANNELS.GET_VALIDATION_STATE, () => {
       installation.onUpdate?.(installation.validation);
       return installation.validation;
     });
+
+    // Validate installation
     ipcMain.handle(IPC_CHANNELS.VALIDATE_INSTALLATION, async () => {
       getTelemetry().track('installation_manager:installation_validate');
       return await installation.validate();
     });
-    ipcMain.handle(IPC_CHANNELS.UV_INSTALL_REQUIREMENTS, () => {
+
+    // Install python packages
+    ipcMain.handle(IPC_CHANNELS.UV_INSTALL_REQUIREMENTS, async () => {
       getTelemetry().track('installation_manager:uv_requirements_install');
-      return installation.virtualEnvironment.reinstallRequirements(sendLogIpc);
+      const result = await installation.virtualEnvironment.reinstallRequirements(sendLogIpc);
+
+      if (result) await this.onInstallFix?.();
+      return result;
     });
+
+    // Clear uv cache
     ipcMain.handle(IPC_CHANNELS.UV_CLEAR_CACHE, async () => {
       getTelemetry().track('installation_manager:uv_cache_clear');
       return await installation.virtualEnvironment.clearUvCache(sendLogIpc);
     });
+
+    // Clear .venv directory
     ipcMain.handle(IPC_CHANNELS.UV_RESET_VENV, async (): Promise<boolean> => {
       getTelemetry().track('installation_manager:uv_venv_reset');
       const venv = installation.virtualEnvironment;
@@ -70,7 +86,28 @@ export class Troubleshooting implements Disposable {
       const created = await venv.createVenv(sendLogIpc);
       if (!created) return false;
 
-      return await venv.upgradePip({ onStdout: sendLogIpc, onStderr: sendLogIpc });
+      const result = await venv.upgradePip({ onStdout: sendLogIpc, onStderr: sendLogIpc });
+
+      if (result) await this.onInstallFix?.();
+      return result;
+    });
+
+    // Change base path
+    ipcMain.handle(IPC_CHANNELS.SET_BASE_PATH, async (): Promise<boolean> => {
+      const currentBasePath = useDesktopConfig().get('basePath');
+
+      const response = await this.appWindow.showOpenDialog({
+        properties: ['openDirectory'],
+        defaultPath: currentBasePath,
+      });
+      if (response.canceled || !(response.filePaths.length > 0)) return false;
+
+      const basePath = response.filePaths[0];
+      useDesktopConfig().set('basePath', basePath);
+      const result = await ComfyServerConfig.setBasePathInDefaultConfig(basePath);
+
+      if (result) await this.onInstallFix?.();
+      return result;
     });
   }
 
@@ -83,5 +120,6 @@ export class Troubleshooting implements Disposable {
     ipcMain.removeHandler(IPC_CHANNELS.UV_INSTALL_REQUIREMENTS);
     ipcMain.removeHandler(IPC_CHANNELS.UV_CLEAR_CACHE);
     ipcMain.removeHandler(IPC_CHANNELS.UV_RESET_VENV);
+    ipcMain.removeHandler(IPC_CHANNELS.SET_BASE_PATH);
   }
 }
