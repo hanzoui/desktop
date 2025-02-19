@@ -12,6 +12,7 @@ import type { FatalErrorOptions } from './infrastructure/interfaces';
 import { InstallationManager } from './install/installationManager';
 import { Troubleshooting } from './install/troubleshooting';
 import type { IAppState } from './main-process/appState';
+import { useAppState } from './main-process/appState';
 import { AppWindow } from './main-process/appWindow';
 import { ComfyDesktopApp } from './main-process/comfyDesktopApp';
 import type { ComfyInstallation } from './main-process/comfyInstallation';
@@ -22,18 +23,16 @@ import { DesktopConfig } from './store/desktopConfig';
 
 export class DesktopApp implements HasTelemetry {
   readonly telemetry: ITelemetry = getTelemetry();
-  readonly appWindow: AppWindow;
+  readonly appState: IAppState = useAppState();
+  readonly appWindow: AppWindow = new AppWindow();
 
   comfyDesktopApp?: ComfyDesktopApp;
   installation?: ComfyInstallation;
 
   constructor(
-    private readonly appState: IAppState,
     private readonly overrides: DevOverrides,
     private readonly config: DesktopConfig
-  ) {
-    this.appWindow = new AppWindow(appState);
-  }
+  ) {}
 
   /** Load start screen - basic spinner */
   async showLoadingPage() {
