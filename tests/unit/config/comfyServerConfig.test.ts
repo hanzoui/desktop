@@ -31,8 +31,6 @@ async function copyFixture(fixturePath: string, targetPath: string) {
 
 describe('ComfyServerConfig', () => {
   let tempDir = '';
-  const originalPlatform = process.platform;
-  const originalEnv = process.env;
 
   beforeAll(async () => {
     tempDir = await createTmpDir();
@@ -44,12 +42,11 @@ describe('ComfyServerConfig', () => {
 
   afterAll(async () => {
     await rm(tempDir, { recursive: true });
-    Object.defineProperty(process, 'platform', { value: originalPlatform });
-    process.env = originalEnv;
   });
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
   });
 
   describe('configPath', () => {
@@ -144,7 +141,7 @@ describe('ComfyServerConfig', () => {
     });
 
     it.each(['win32', 'darwin', 'linux'] as const)('should include platform-specific header for %s', (platform) => {
-      Object.defineProperty(process, 'platform', { value: platform });
+      vi.stubGlobal('process', { platform });
       const testConfig = { test: { path: '/test' } };
       const generatedYaml = ComfyServerConfig.generateConfigFileContent(testConfig);
       expect(generatedYaml).toContain(`# ComfyUI extra_model_paths.yaml for ${platform}`);
@@ -199,7 +196,7 @@ describe('ComfyServerConfig', () => {
 
   describe('getBaseConfig', () => {
     it.each(['win32', 'darwin', 'linux'] as const)('should return platform-specific config for %s', (platform) => {
-      Object.defineProperty(process, 'platform', { value: platform });
+      vi.stubGlobal('process', { platform });
       const platformConfig = ComfyServerConfig.getBaseConfig();
 
       expect(platformConfig.custom_nodes).toBe('custom_nodes/');
@@ -207,7 +204,7 @@ describe('ComfyServerConfig', () => {
     });
 
     it('should throw for unknown platforms', () => {
-      Object.defineProperty(process, 'platform', { value: 'invalid' });
+      vi.stubGlobal('process', { platform: 'invalid' });
       expect(() => ComfyServerConfig.getBaseConfig()).toThrow('No base config found for invalid');
     });
   });
@@ -306,6 +303,102 @@ describe('ComfyServerConfig', () => {
       vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(null);
       const result = await ComfyServerConfig.getConfigFromRepoPath(path.join(path.sep, 'test', 'repo'));
       expect(result).toEqual({});
+    });
+  });
+
+  describe('addAppBundledCustomNodesToConfig', () => {
+    it('should add desktop_extensions when not present', async () => {
+      const mockConfig = {
+        comfyui_desktop: { base_path: '/test/path' },
+      };
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(mockConfig);
+      const writeConfigSpy = vi.spyOn(ComfyServerConfig, 'writeConfigFile').mockResolvedValueOnce(true);
+
+      await ComfyServerConfig.addAppBundledCustomNodesToConfig();
+
+      expect(writeConfigSpy).toHaveBeenCalledWith(
+        ComfyServerConfig.configPath,
+        expect.stringContaining('desktop_extensions:')
+      );
+      expect(writeConfigSpy).toHaveBeenCalledWith(
+        ComfyServerConfig.configPath,
+        expect.stringContaining(path.normalize('/mocked/app_resources/ComfyUI/custom_nodes'))
+      );
+    });
+
+    it('should not modify config when desktop_extensions already exists', async () => {
+      const mockConfig = {
+        comfyui_desktop: { base_path: '/test/path' },
+        desktop_extensions: { custom_nodes: '/existing/path' },
+      };
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(mockConfig);
+      const writeConfigSpy = vi.spyOn(ComfyServerConfig, 'writeConfigFile');
+
+      await ComfyServerConfig.addAppBundledCustomNodesToConfig();
+
+      expect(writeConfigSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle config read failure', async () => {
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(null);
+      const writeConfigSpy = vi.spyOn(ComfyServerConfig, 'writeConfigFile');
+
+      await ComfyServerConfig.addAppBundledCustomNodesToConfig();
+
+      expect(writeConfigSpy).not.toHaveBeenCalled();
+      expect(log.default.error).toHaveBeenCalledWith('Failed to read config file');
+    });
+  });
+
+  describe('setBasePathInDefaultConfig', () => {
+    it('should create new config file when none exists', async () => {
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(null);
+      const createConfigSpy = vi.spyOn(ComfyServerConfig, 'createConfigFile').mockResolvedValueOnce(true);
+
+      const result = await ComfyServerConfig.setBasePathInDefaultConfig('/new/base/path');
+
+      expect(result).toBe(true);
+      expect(createConfigSpy).toHaveBeenCalledWith(
+        ComfyServerConfig.configPath,
+        expect.objectContaining({
+          comfyui_desktop: expect.objectContaining({
+            base_path: '/new/base/path',
+          }),
+        })
+      );
+    });
+
+    it('should update existing config file with new base path', async () => {
+      const existingConfig = {
+        comfyui_desktop: {
+          base_path: '/old/path',
+          custom_nodes: 'custom_nodes/',
+        },
+      };
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(existingConfig);
+      const writeConfigSpy = vi.spyOn(ComfyServerConfig, 'writeConfigFile').mockResolvedValueOnce(true);
+
+      const result = await ComfyServerConfig.setBasePathInDefaultConfig('/new/base/path');
+
+      expect(result).toBe(true);
+      expect(writeConfigSpy).toHaveBeenCalledWith(
+        ComfyServerConfig.configPath,
+        expect.stringContaining('/new/base/path')
+      );
+    });
+
+    it('should create comfyui_desktop section if not present', async () => {
+      const existingConfig = {};
+      vi.spyOn(ComfyServerConfig, 'readConfigFile').mockResolvedValueOnce(existingConfig);
+      const writeConfigSpy = vi.spyOn(ComfyServerConfig, 'writeConfigFile').mockResolvedValueOnce(true);
+
+      const result = await ComfyServerConfig.setBasePathInDefaultConfig('/new/base/path');
+
+      expect(result).toBe(true);
+      expect(writeConfigSpy).toHaveBeenCalledWith(
+        ComfyServerConfig.configPath,
+        expect.stringContaining('comfyui_desktop:')
+      );
     });
   });
 });
