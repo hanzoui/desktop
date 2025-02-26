@@ -493,7 +493,7 @@ export class VirtualEnvironment implements HasTelemetry {
     }
   }
 
-  private async installComfyUIRequirements(callbacks?: ProcessCallbacks): Promise<void> {
+  async installComfyUIRequirements(callbacks?: ProcessCallbacks): Promise<void> {
     log.info(`Installing ComfyUI requirements from ${this.comfyUIRequirementsPath}`);
     const installCmd = getPipInstallArgs({
       requirementsFile: this.comfyUIRequirementsPath,
@@ -531,7 +531,7 @@ export class VirtualEnvironment implements HasTelemetry {
    * `'manager-upgrade'` if `uv` and `toml` are missing,
    * or `'error'` when any other combination of packages are missing.
    */
-  async hasRequirements(): Promise<'OK' | 'error' | 'manager-upgrade'> {
+  async hasRequirements(): Promise<'OK' | 'error' | 'package-upgrade'> {
     const checkRequirements = async (requirementsPath: string) => {
       const args = ['pip', 'install', '--dry-run', '-r', requirementsPath];
       log.info(`Running direct process command: ${args.join(' ')}`);
@@ -557,9 +557,25 @@ export class VirtualEnvironment implements HasTelemetry {
       return venvOk;
     };
 
-    // Manager upgrade in 0.4.18
+    // Manager upgrade in 0.4.18 - uv, toml (exactly)
     const isManagerUpgrade = (output: string) => {
       return output.search(/\bWould install 2 packages(\s+\+ (toml|uv)==[\d.]+){2}\s*$/) !== -1;
+    };
+
+    // Package upgrade in 0.4.21 - aiohttp, av, yarl
+    const isCoreUpgrade = (output: string) => {
+      const lines = output.split('\n');
+      let adds = 0;
+      for (const line of lines) {
+        // Reject upgrade if removing an unrecognised package
+        if (line.search(/^\s*- (?!aiohttp|av|yarl).*==/) !== -1) return false;
+        if (line.search(/^\s*\+ /) !== -1) {
+          if (line.search(/^\s*\+ (aiohttp|av|yarl)==/) === -1) return false;
+          adds++;
+        }
+        // An unexpected package means this is not a package upgrade
+      }
+      return adds > 0;
     };
 
     const coreOutput = await checkRequirements(this.comfyUIRequirementsPath);
@@ -568,9 +584,12 @@ export class VirtualEnvironment implements HasTelemetry {
     const coreOk = hasAllPackages(coreOutput);
     const managerOk = hasAllPackages(managerOutput);
 
-    if (coreOk && isManagerUpgrade(managerOutput)) {
-      log.info('ComfyUI-Manager requires toml and uv. Installing.');
-      return 'manager-upgrade';
+    const upgradeCore = !coreOk && isCoreUpgrade(coreOutput);
+    const upgradeManager = !managerOk && isManagerUpgrade(managerOutput);
+
+    if ((managerOk && upgradeCore) || (coreOk && upgradeManager) || (upgradeCore && upgradeManager)) {
+      log.info('Package update of known packages required. Core:', upgradeCore, 'Manager:', upgradeManager);
+      return 'package-upgrade';
     }
 
     return coreOk && managerOk ? 'OK' : 'error';
