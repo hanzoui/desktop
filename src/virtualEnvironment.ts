@@ -559,7 +559,10 @@ export class VirtualEnvironment implements HasTelemetry {
 
     // Manager upgrade in 0.4.18 - uv, toml (exactly)
     const isManagerUpgrade = (output: string) => {
-      return output.search(/\bWould install 2 packages(\s+\+ (toml|uv)==[\d.]+){2}\s*$/) !== -1;
+      // Match the original case: 2 packages (uv + toml) | Added in https://github.com/ltdrdata/ComfyUI-Manager/commit/816a53a7b1a057af373c458ebf80aaae565b996b
+      // Match the new case: 1 package (chardet) | Added in https://github.com/ltdrdata/ComfyUI-Manager/commit/60a5e4f2614c688b41a1ebaf0694953eb26db38a
+      const anyCombination = /\bWould install [1-3] packages(\s+\+ (toml|uv|chardet)==[\d.]+){1,3}\s*$/;
+      return anyCombination.test(output);
     };
 
     // Package upgrade in 0.4.21 - aiohttp, av, yarl
