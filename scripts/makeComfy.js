@@ -22,7 +22,6 @@ execAndLog(
 execAndLog(`yarn run make:frontend`);
 execAndLog(`yarn run download:uv all`);
 execAndLog(`yarn run patch:core:frontend`);
-
 /**
  * Run a command and log the output.
  * @param {string} command The command to run.
