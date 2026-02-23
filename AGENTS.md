@@ -1,10 +1,10 @@
-# ComfyUI Desktop - Claude Code Instructions
+# Hanzo Desktop - Claude Code Instructions
 
 ## Project Overview
 
-**ComfyUI Desktop** (@comfyorg/comfyui-electron) is an Electron-based desktop application that packages ComfyUI with a user-friendly interface. It's "the best modular GUI to run AI diffusion models" and automatically handles Python environment setup, dependency management, and provides a seamless desktop experience for running AI models.
+**Hanzo Desktop** (@hanzoui/hanzo-studio-electron) is an Electron-based desktop application that packages Hanzo Studio with a user-friendly interface. It's "the best modular GUI to run AI diffusion models" and automatically handles Python environment setup, dependency management, and provides a seamless desktop experience for running AI models.
 
-- **Homepage**: https://comfy.org
+- **Homepage**: https://hanzo.ai
 
 ## Key Technologies
 
@@ -32,7 +32,7 @@ yarn typecheck         # TypeScript type checking (all)
 
 ```bash
 yarn start             # Build and launch app with file watching
-yarn make:assets       # Download ComfyUI dependencies
+yarn make:assets       # Download Hanzo Studio dependencies
 yarn clean             # Remove build artifacts
 ```
 
@@ -69,7 +69,7 @@ We have testing configured with Vitest. Use vitest to create any tests you need.
 - **`desktopApp.ts`**: Core application logic
 - **`preload.ts`**: Electron preload script
 - **`main-process/`**: Main process modules
-  - `comfyDesktopApp.ts` - ComfyUI server management
+  - `comfyDesktopApp.ts` - Hanzo Studio server management
   - `appWindow.ts` - Window management
   - `comfyServer.ts` - Server lifecycle
 - **`install/`**: Installation & setup logic
@@ -96,7 +96,7 @@ We have testing configured with Vitest. Use vitest to create any tests you need.
 
 ## Important Files & Configuration
 
-- **`package.json`**: Defines ComfyUI versions and dependencies
+- **`package.json`**: Defines Hanzo Studio versions and dependencies
 - **`assets/requirements/`**: Pre-compiled Python requirements by platform
 - **`todesktop.json`**: Cloud build and distribution config
 - **`builder-debug.config.ts`**: Local development build settings
@@ -106,9 +106,9 @@ We have testing configured with Vitest. Use vitest to create any tests you need.
 
 The app packages these components:
 
-- **ComfyUI**: AI diffusion model GUI
-- **ComfyUI_frontend**: Modern web frontend
-- **ComfyUI-Manager**: Plugin/extension manager
+- **Hanzo Studio**: AI diffusion model GUI
+- **Hanzo Studio_frontend**: Modern web frontend
+- **Hanzo Manager**: Plugin/extension manager
 - **uv**: Fast Python package manager
 
 ## Development Environment Variables
@@ -119,9 +119,9 @@ The app packages these components:
 
 ## Platform-Specific Paths
 
-- **Windows**: `%APPDATA%\ComfyUI` (config), `%LOCALAPPDATA%\Programs\ComfyUI` (app)
-- **macOS**: `~/Library/Application Support/ComfyUI`
-- **Linux**: `~/.config/ComfyUI`
+- **Windows**: `%APPDATA%\Hanzo Studio` (config), `%LOCALAPPDATA%\Programs\Hanzo Studio` (app)
+- **macOS**: `~/Library/Application Support/Hanzo Studio`
+- **Linux**: `~/.config/Hanzo Studio`
 
 ## Code Style & Conventions
 

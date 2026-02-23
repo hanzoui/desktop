@@ -92,7 +92,7 @@ function initalizeLogging() {
 /** Quit when all windows are closed.*/
 function quitWhenAllWindowsAreClosed() {
   app.on('window-all-closed', () => {
-    log.info('Quitting ComfyUI because window all closed');
+    log.info('Quitting Hanzo Studio because window all closed');
     app.quit();
   });
 }

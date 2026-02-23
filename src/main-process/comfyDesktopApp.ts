@@ -37,11 +37,11 @@ export class ComfyDesktopApp implements HasTelemetry {
   }
 
   /**
-   * Build the server args to launch ComfyUI server.
+   * Build the server args to launch Hanzo Studio server.
    * @param useExternalServer Whether to use an external server instead of starting one locally.
-   * @param COMFY_HOST Override the listen address (host) for the ComfyUI server.
-   * @param COMFY_PORT Override the port for the ComfyUI server.
-   * @returns The server args for the ComfyUI server.
+   * @param COMFY_HOST Override the listen address (host) for the Hanzo Studio server.
+   * @param COMFY_PORT Override the port for the Hanzo Studio server.
+   * @returns The server args for the Hanzo Studio server.
    */
   async buildServerArgs({ useExternalServer, COMFY_HOST, COMFY_PORT }: DevOverrides): Promise<ServerArgs> {
     // Shallow-clone the setting launch args to avoid mutation.
@@ -87,7 +87,7 @@ export class ComfyDesktopApp implements HasTelemetry {
     });
   }
 
-  /** Performs a process restart of the ComfyUI server. Does not discard instance / terminal. */
+  /** Performs a process restart of the Hanzo Studio server. Does not discard instance / terminal. */
   async restartComfyServer(): Promise<boolean> {
     if (!this.comfyServer) return false;
 
@@ -107,8 +107,8 @@ export class ComfyDesktopApp implements HasTelemetry {
     const { virtualEnvironment } = this.installation;
 
     if (this.comfyServer?.isRunning) {
-      log.error('ComfyUI server is already running');
-      throw new Error('ComfyUI server is already running');
+      log.error('Hanzo Studio server is already running');
+      throw new Error('Hanzo Studio server is already running');
     }
 
     this.appWindow.sendServerStartProgress(ProgressStatus.STARTING_SERVER);

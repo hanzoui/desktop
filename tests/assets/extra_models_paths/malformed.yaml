@@ -1,4 +1,4 @@
-comfyui_desktop:
+hanzo_studio_desktop:
   base_path: 
     - this is malformed
   - incorrect indentation 

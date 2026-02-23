@@ -108,13 +108,13 @@
 !define LABEL_STANDARD       "Standard"
 !define LABEL_CUSTOM         "Custom"
 !define LABEL_APPDATA        "Delete logs and Desktop settings"
-!define LABEL_VENV           "Remove the ComfyUI Python virtual environment (.venv)"
+!define LABEL_VENV           "Remove the Hanzo Studio Python virtual environment (.venv)"
 !define LABEL_UPDATECACHE    "Remove any temporary update files"
-!define LABEL_RESETSETTINGS  "Reset ComfyUI settings (comfy.settings.json)"
-!define LABEL_BASEPATH       "Completely delete ComfyUI Path - all models, created content, etc"
-!define LABEL_COMFYUI_PATH   "ComfyUI Path"
+!define LABEL_RESETSETTINGS  "Reset Hanzo Studio settings (comfy.settings.json)"
+!define LABEL_BASEPATH       "Completely delete Hanzo Studio Path - all models, created content, etc"
+!define LABEL_COMFYUI_PATH   "Hanzo Studio Path"
 !define LABEL_NOT_FOUND      "Not found"
-!define LABEL_CONFIRM_DELETE "Yes, delete the ComfyUI Folder"
+!define LABEL_CONFIRM_DELETE "Yes, delete the Hanzo Studio Folder"
 
 # The following is used to add the "/SD" flag to MessageBox so that the
 # machine can restart if the uninstaller fails.
@@ -166,8 +166,8 @@
   Var /GLOBAL radioRemoveStandard
   Var /GLOBAL radioRemoveCustom
 
-  Var /GLOBAL isDeleteComfyUI
-  Var /GLOBAL chkDeleteComfyUI
+  Var /GLOBAL isDeleteHanzo Studio
+  Var /GLOBAL chkDeleteHanzo Studio
   Var /GLOBAL isDeleteBasePath
   Var /GLOBAL chkDeleteBasePath
   Var /GLOBAL isDeleteUpdateCache
@@ -201,10 +201,10 @@
     ${NSD_OnClick} $radioRemoveCustom un.PresetCustom_OnClick
 
     ${NSD_CreateCheckBox} 8u 54u 100% 12u "${LABEL_APPDATA}"
-    Pop $chkDeleteComfyUI
-    StrCpy $isDeleteComfyUI "1"
-    ${NSD_SetState} $chkDeleteComfyUI 1
-    ${NSD_OnClick} $chkDeleteComfyUI un.Desc_ComfyData
+    Pop $chkDeleteHanzo Studio
+    StrCpy $isDeleteHanzo Studio "1"
+    ${NSD_SetState} $chkDeleteHanzo Studio 1
+    ${NSD_OnClick} $chkDeleteHanzo Studio un.Desc_ComfyData
 
     ${NSD_CreateCheckBox} 8u 68u 100% 12u "${LABEL_UPDATECACHE}"
     Pop $chkDeleteUpdateCache
@@ -230,7 +230,7 @@
     ${NSD_SetState} $chkDeleteBasePath 0
     ${NSD_OnClick} $chkDeleteBasePath un.Desc_BasePath
 
-    # ComfyUI Path
+    # Hanzo Studio Path
     ${If} $basePath != ""
       StrCpy $1 "${LABEL_COMFYUI_PATH}: $basePath"
     ${Else}
@@ -260,13 +260,13 @@
   Function un.SetCheckboxesVisible
     Exch $0
     ${If} $0 == 0
-      ShowWindow $chkDeleteComfyUI ${SW_HIDE}
+      ShowWindow $chkDeleteHanzo Studio ${SW_HIDE}
       ShowWindow $chkDeleteUpdateCache ${SW_HIDE}
       ShowWindow $chkResetSettings ${SW_HIDE}
       ShowWindow $chkDeleteVenv ${SW_HIDE}
       ShowWindow $chkDeleteBasePath ${SW_HIDE}
     ${Else}
-      ShowWindow $chkDeleteComfyUI ${SW_SHOW}
+      ShowWindow $chkDeleteHanzo Studio ${SW_SHOW}
       ShowWindow $chkDeleteUpdateCache ${SW_SHOW}
       ${If} $basePath != ""
         ShowWindow $chkResetSettings ${SW_SHOW}
@@ -293,7 +293,7 @@
 
   Function un.Desc_ComfyData
     Pop $0
-    ${NSD_SetText} $descLabel "Removes %APPDATA%\ComfyUI (log files, settings exclusive to the desktop app)."
+    ${NSD_SetText} $descLabel "Removes %APPDATA%\Hanzo Studio (log files, settings exclusive to the desktop app)."
   FunctionEnd
 
   Function un.Desc_Venv
@@ -308,30 +308,30 @@
 
   Function un.Desc_ResetSettings
     Pop $0
-    ${NSD_SetText} $descLabel "Removes the ComfyUI settings file (comfy.settings.json), resetting in-app settings."
+    ${NSD_SetText} $descLabel "Removes the Hanzo Studio settings file (comfy.settings.json), resetting in-app settings."
   FunctionEnd
 
   Function un.Desc_BasePath
     Pop $0
-    ${NSD_SetText} $descLabel "Removes the entire ComfyUI Path directory (use with caution)."
+    ${NSD_SetText} $descLabel "Removes the entire Hanzo Studio Path directory (use with caution)."
   FunctionEnd
 
   Function un.ExtraUninstallPage_Leave
     # If Full preset selected, apply selections on leave
     ${NSD_GetState} $radioRemoveStandard $1
     ${If} $1 == 1
-      ${NSD_SetState} $chkDeleteComfyUI 1
+      ${NSD_SetState} $chkDeleteHanzo Studio 1
       ${NSD_SetState} $chkDeleteVenv 1
       ${NSD_SetState} $chkDeleteUpdateCache 1
       ${NSD_SetState} $chkResetSettings 0
       ${NSD_SetState} $chkDeleteBasePath 0
     ${EndIf}
 
-    ${NSD_GetState} $chkDeleteComfyUI $0
+    ${NSD_GetState} $chkDeleteHanzo Studio $0
     ${If} $0 == 1
-      StrCpy $isDeleteComfyUI "1"
+      StrCpy $isDeleteHanzo Studio "1"
     ${Else}
-      StrCpy $isDeleteComfyUI "0"
+      StrCpy $isDeleteHanzo Studio "0"
     ${EndIf}
 
     ${NSD_GetState} $chkDeleteVenv $0
@@ -401,11 +401,11 @@
     ${EndIf}
   FunctionEnd
 
-  # Resolve $basePath from $APPDATA\ComfyUI\config.json (sets empty if not found)
+  # Resolve $basePath from $APPDATA\Hanzo Studio\config.json (sets empty if not found)
   Function un.ResolveBasePath
     StrCpy $basePath ""
     ClearErrors
-    FileOpen $0 "$APPDATA\ComfyUI\config.json" r
+    FileOpen $0 "$APPDATA\Hanzo Studio\config.json" r
     IfErrors done
 
     StrCpy $1 "basePath"
@@ -488,7 +488,7 @@
 
     ${if} $basePath != ""
       ${if} $isDeleteBasePath == "1"
-        !insertmacro RMDIR_LOGGED "$basePath" "ComfyUI data path (models, output, etc)"
+        !insertmacro RMDIR_LOGGED "$basePath" "Hanzo Studio data path (models, output, etc)"
       ${else}
         ${if} $isDeleteVenv == "1"
           StrCpy $4 "$basePath\.venv"
@@ -506,7 +506,7 @@
       ${endIf}
     ${endIf}
 
-    ${if} $isDeleteComfyUI == "1"
+    ${if} $isDeleteHanzo Studio == "1"
       # Use built-in electron-builder app data removal
       !define DELETE_APP_DATA_ON_UNINSTALL "1"
     ${endIf}
@@ -516,7 +516,7 @@
         SetShellVarContext current
       ${endif}
 
-      StrCpy $R5 "$LOCALAPPDATA\@comfyorgcomfyui-electron-updater"
+      StrCpy $R5 "$LOCALAPPDATA\@comfyorghanzo-studio-electron-updater"
       !insertmacro RMDIR_LOGGED "$R5" "Updater cache"
       ${if} $installMode == "all"
         SetShellVarContext all

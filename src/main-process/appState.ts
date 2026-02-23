@@ -11,7 +11,7 @@ import { type InstallStageInfo, createInstallStageInfo } from './installStages';
 type AppStateEvents = {
   /** Occurs once, immediately before registering IPC handlers. */
   ipcRegistered: [];
-  /** Occurs once, immediately after the ComfyUI server has finished loading. */
+  /** Occurs once, immediately after the Hanzo Studio server has finished loading. */
   loaded: [];
   /** Occurs when the install stage changes. */
   installStageChanged: [InstallStageInfo];

@@ -1,5 +1,5 @@
 ---
-description: Integration testing guide for ComfyUI Desktop
+description: Integration testing guide for Hanzo Desktop
 globs:
   - tests/integration/**
 ---

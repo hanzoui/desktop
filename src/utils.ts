@@ -235,7 +235,7 @@ interface HardwareValidation {
 }
 
 /**
- * Validate the system hardware requirements for ComfyUI.
+ * Validate the system hardware requirements for Hanzo Studio.
  */
 export async function validateHardware(): Promise<HardwareValidation> {
   log.verbose('Validating hardware.');
@@ -249,7 +249,7 @@ export async function validateHardware(): Promise<HardwareValidation> {
       if (!isArmMac) {
         return {
           isValid: false,
-          error: 'ComfyUI requires Apple Silicon (M1/M2/M3) Mac. Intel-based Macs are not supported.',
+          error: 'Hanzo Studio requires Apple Silicon (M1/M2/M3) Mac. Intel-based Macs are not supported.',
         };
       }
 
@@ -277,13 +277,13 @@ export async function validateHardware(): Promise<HardwareValidation> {
 
       return {
         isValid: false,
-        error: 'ComfyUI requires an NVIDIA or AMD GPU on Windows. No supported GPU was detected.',
+        error: 'Hanzo Studio requires an NVIDIA or AMD GPU on Windows. No supported GPU was detected.',
       };
     }
 
     return {
       isValid: false,
-      error: 'ComfyUI currently supports only Windows (NVIDIA or AMD GPU) and Apple Silicon Macs.',
+      error: 'Hanzo Studio currently supports only Windows (NVIDIA or AMD GPU) and Apple Silicon Macs.',
     };
   } catch (error) {
     log.error('Error validating hardware:', error);

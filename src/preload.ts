@@ -54,7 +54,7 @@ export interface DownloadProgressUpdate {
   message?: string;
 }
 
-/** @todo Type inference chain broken by comfyui-electron-types. This is duplication. */
+/** @todo Type inference chain broken by hanzo-studio-electron-types. This is duplication. */
 export interface ElectronOverlayOptions {
   /**
    * The CSS color of the Window Controls Overlay when enabled.
@@ -75,7 +75,7 @@ export interface ElectronContextMenuOptions {
   pos?: Electron.Point;
 }
 
-/** The result of validating a path (originally for ComfyUI installation). */
+/** The result of validating a path (originally for Hanzo Studio installation). */
 export type PathValidationResult = {
   isValid: boolean;
   /** `true` if the parent of the selected path (via `dirname()`) is not present (it must be present). */
@@ -94,7 +94,7 @@ export type PathValidationResult = {
   isInsideUpdaterCache?: boolean;
   /** The amount of free space in the path. `-1` if this could not be determined. */
   freeSpace: number;
-  /** The amount of space in bytes required to install ComfyUI. */
+  /** The amount of space in bytes required to install Hanzo Studio. */
   requiredSpace: number;
   /** If any unhandled exceptions occured, this is the result of casting the error to string. */
   error?: string;
@@ -123,7 +123,7 @@ export interface InstallValidation {
 
 const electronAPI = {
   /**
-   * Callback for progress updates from the main process for starting ComfyUI.
+   * Callback for progress updates from the main process for starting Hanzo Studio.
    * @param callback
    */
   onProgressUpdate: (callback: (update: { status: ProgressStatus }) => void) => {
@@ -224,8 +224,8 @@ const electronAPI = {
   getElectronVersion: () => {
     return ipcRenderer.invoke(IPC_CHANNELS.GET_ELECTRON_VERSION);
   },
-  /** The ComfyUI core version (as defined in package.json) */
-  getComfyUIVersion: () => __COMFYUI_VERSION__,
+  /** The Hanzo Studio core version (as defined in package.json) */
+  getHanzo StudioVersion: () => __COMFYUI_VERSION__,
   Terminal: {
     /**
      * Writes the data to the terminal
@@ -280,9 +280,9 @@ const electronAPI = {
     return ipcRenderer.invoke(IPC_CHANNELS.VALIDATE_INSTALL_PATH, path, bypassSpaceCheck);
   },
   /**
-   * Validate whether the given path is a valid ComfyUI source path.
+   * Validate whether the given path is a valid Hanzo Studio source path.
    */
-  validateComfyUISource: (path: string): Promise<{ isValid: boolean; error?: string }> => {
+  validateHanzo StudioSource: (path: string): Promise<{ isValid: boolean; error?: string }> => {
     return ipcRenderer.invoke(IPC_CHANNELS.VALIDATE_COMFYUI_SOURCE, path);
   },
   /**
@@ -292,10 +292,10 @@ const electronAPI = {
     return ipcRenderer.invoke(IPC_CHANNELS.SHOW_DIRECTORY_PICKER);
   },
   /**
-   * Install ComfyUI with given options.
+   * Install Hanzo Studio with given options.
    * @todo Move to {@link electronAPI.Validation}
    */
-  installComfyUI: (installOptions: InstallOptions) => {
+  installHanzo Studio: (installOptions: InstallOptions) => {
     ipcRenderer.send(IPC_CHANNELS.INSTALL_COMFYUI, installOptions);
   },
   /**
@@ -474,7 +474,7 @@ const electronAPI = {
 
   uv: {
     /**
-     * Install the requirements for the ComfyUI server.
+     * Install the requirements for the Hanzo Studio server.
      * @returns A promise that resolves when the uv command is complete.
      */
     installRequirements: (): Promise<boolean> => ipcRenderer.invoke(IPC_CHANNELS.UV_INSTALL_REQUIREMENTS),

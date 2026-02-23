@@ -119,7 +119,7 @@ function showResetPrompt(configFilePath: string): Promise<Electron.MessageBoxRet
   return dialog.showMessageBox({
     title: 'Invalid configuration file',
     type: 'error',
-    message: `Format of the configuration file below is invalid.  It should be a JSON file containing only ComfyUI configuration options.\n\n${configFilePath}`,
+    message: `Format of the configuration file below is invalid.  It should be a JSON file containing only Hanzo Studio configuration options.\n\n${configFilePath}`,
     buttons: ['&Reset desktop configuration', 'Show the &file (and quit)', '&Quit'],
     defaultId: 0,
     cancelId: 2,

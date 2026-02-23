@@ -1,8 +1,8 @@
 # Admins
-* @Comfy-Org/comfy_desktop_devs
+* @hanzoui/comfy_desktop_devs
 
 # Maintainers
-*.md @Comfy-Org/comfy_maintainer
-/tests/ @Comfy-Org/comfy_maintainer
-/.vscode/ @Comfy-Org/comfy_maintainer
-/.github/ @Comfy-Org/comfy_maintainer
+*.md @hanzoui/comfy_maintainer
+/tests/ @hanzoui/comfy_maintainer
+/.vscode/ @hanzoui/comfy_maintainer
+/.github/ @hanzoui/comfy_maintainer

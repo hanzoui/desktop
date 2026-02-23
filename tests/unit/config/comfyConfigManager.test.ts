@@ -12,25 +12,25 @@ const { normalize } = path;
 vi.mock('node:fs');
 
 describe('ComfyConfigManager', () => {
-  describe('setUpComfyUI', () => {
-    it('should allow existing directory when it contains ComfyUI structure', () => {
+  describe('setUpHanzo Studio', () => {
+    it('should allow existing directory when it contains Hanzo Studio structure', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
-      expect(() => ComfyConfigManager.createComfyDirectories(path.normalize('/existing/ComfyUI'))).not.toThrow();
+      expect(() => ComfyConfigManager.createComfyDirectories(path.normalize('/existing/Hanzo Studio'))).not.toThrow();
     });
 
-    it('should create ComfyUI subdirectory when it is missing', () => {
+    it('should create Hanzo Studio subdirectory when it is missing', () => {
       vi.mocked(fs.existsSync).mockImplementationOnce((path: PathLike) => {
-        if ([normalize('/some/base/path/ComfyUI')].includes(path.toString())) {
+        if ([normalize('/some/base/path/Hanzo Studio')].includes(path.toString())) {
           return false;
         }
         return true;
       });
 
-      ComfyConfigManager.createComfyDirectories(path.normalize('/some/base/path/ComfyUI'));
+      ComfyConfigManager.createComfyDirectories(path.normalize('/some/base/path/Hanzo Studio'));
     });
   });
 
-  describe('isComfyUIDirectory', () => {
+  describe('isHanzo StudioDirectory', () => {
     it('should return true when all required directories exist', () => {
       vi.mocked(fs.existsSync).mockImplementation((path: PathLike) => {
         const requiredDirs = [
@@ -43,7 +43,7 @@ describe('ComfyConfigManager', () => {
         return requiredDirs.includes(path.toString());
       });
 
-      const result = ComfyConfigManager.isComfyUIDirectory('/fake/path');
+      const result = ComfyConfigManager.isHanzo StudioDirectory('/fake/path');
 
       expect(result).toBe(true);
       expect(fs.existsSync).toHaveBeenCalledTimes(5);
@@ -57,7 +57,7 @@ describe('ComfyConfigManager', () => {
         .mockReturnValueOnce(true) // output exists
         .mockReturnValueOnce(true); // custom_nodes exists
 
-      const result = ComfyConfigManager.isComfyUIDirectory('/fake/path');
+      const result = ComfyConfigManager.isHanzo StudioDirectory('/fake/path');
 
       expect(result).toBe(false);
     });
@@ -67,20 +67,20 @@ describe('ComfyConfigManager', () => {
     it('should create all necessary directories when none exist', () => {
       vi.mocked(fs.existsSync).mockReturnValue(false);
 
-      ComfyConfigManager.createComfyDirectories('/fake/path/ComfyUI');
+      ComfyConfigManager.createComfyDirectories('/fake/path/Hanzo Studio');
 
       // Verify each required directory was created
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/models'), { recursive: true });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/input'), { recursive: true });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/user'), { recursive: true });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/output'), { recursive: true });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/custom_nodes'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/models'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/input'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/user'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/output'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/custom_nodes'), { recursive: true });
     });
 
     it('should create full directory structure including all model subdirectories', () => {
       vi.mocked(fs.existsSync).mockReturnValue(false);
 
-      ComfyConfigManager.createComfyDirectories('/fake/path/ComfyUI');
+      ComfyConfigManager.createComfyDirectories('/fake/path/Hanzo Studio');
 
       // Verify model subdirectories are created
       const expectedModelDirs = [
@@ -112,23 +112,23 @@ describe('ComfyConfigManager', () => {
       ];
 
       for (const dir of expectedModelDirs) {
-        expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize(`/fake/path/ComfyUI/models/${dir}`), {
+        expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize(`/fake/path/Hanzo Studio/models/${dir}`), {
           recursive: true,
         });
       }
 
       // Verify nested subdirectories
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/user/default'), { recursive: true });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/models/insightface/buffalo_1'), {
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/user/default'), { recursive: true });
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/models/insightface/buffalo_1'), {
         recursive: true,
       });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/models/blip/checkpoints'), {
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/models/blip/checkpoints'), {
         recursive: true,
       });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/models/xlabs/loras'), {
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/models/xlabs/loras'), {
         recursive: true,
       });
-      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/ComfyUI/models/xlabs/controlnets'), {
+      expect(fs.mkdirSync).toHaveBeenCalledWith(path.normalize('/fake/path/Hanzo Studio/models/xlabs/controlnets'), {
         recursive: true,
       });
     });
@@ -138,10 +138,10 @@ describe('ComfyConfigManager', () => {
         throw new Error('Permission denied');
       });
 
-      ComfyConfigManager.createComfyDirectories('/fake/path/ComfyUI');
+      ComfyConfigManager.createComfyDirectories('/fake/path/Hanzo Studio');
 
       expect(fs.mkdirSync).toHaveBeenCalled();
-      expect(log.default.error).toHaveBeenCalledWith('Failed to create ComfyUI directories:', expect.any(Error));
+      expect(log.default.error).toHaveBeenCalledWith('Failed to create Hanzo Studio directories:', expect.any(Error));
     });
   });
 

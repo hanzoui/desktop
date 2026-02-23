@@ -24,12 +24,12 @@ module.exports = async ({ appOutDir, packager, outDir }) => {
     const assetPath = path.join(mainPath, 'app-wrapper', 'app', 'assets');
     const resourcePath = path.join(appPath, 'Contents', 'Resources');
     // Remove these Git folders that mac's codesign is choking on. Need a more recursive way to just find all folders with '.git' and delete
-    await fs.rm(path.join(assetPath, 'ComfyUI', '.git'), { recursive: true, force: true });
-    await fs.rm(path.join(assetPath, 'ComfyUI', 'custom_nodes', 'ComfyUI-Manager', '.git'), {
+    await fs.rm(path.join(assetPath, 'Hanzo Studio', '.git'), { recursive: true, force: true });
+    await fs.rm(path.join(assetPath, 'Hanzo Studio', 'custom_nodes', 'Hanzo Manager', '.git'), {
       recursive: true,
       force: true,
     });
-    await fs.rm(path.join(assetPath, 'ComfyUI', 'custom_nodes', 'DesktopSettingsExtension', '.git'), {
+    await fs.rm(path.join(assetPath, 'Hanzo Studio', 'custom_nodes', 'DesktopSettingsExtension', '.git'), {
       recursive: true,
       force: true,
     });

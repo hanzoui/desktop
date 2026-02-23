@@ -3,7 +3,7 @@ import os from 'node:os';
 export function getDefaultShell(): string {
   switch (os.platform()) {
     case 'win32':
-      // Use full path to avoid e.g. https://github.com/Comfy-Org/desktop/issues/584
+      // Use full path to avoid e.g. https://github.com/hanzoui/desktop/issues/584
       return `${process.env.SYSTEMROOT}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`;
     case 'darwin':
       return 'zsh';

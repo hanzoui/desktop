@@ -112,14 +112,14 @@ const buildRestrictedPaths = (): RestrictedPathEntry[] => {
     if (localAppData) {
       // 3. Legacy/default install location for user-scope installs.
       // Even if current builds install elsewhere (e.g., ToDesktop-created folders),
-      // we keep this older comfyui-electron path blacklisted so anyone still on that
+      // we keep this older hanzo-studio-electron path blacklisted so anyone still on that
       // target won't accidentally store data where the app lives.
-      addRestrictedPath('appInstallDir', path.join(localAppData, 'Programs', 'comfyui-electron'));
+      addRestrictedPath('appInstallDir', path.join(localAppData, 'Programs', 'hanzo-studio-electron'));
 
       // 4. Updater cache directories
       // These are hardcoded by electron-updater to be in LocalAppData
-      addRestrictedPath('updaterCache', path.join(localAppData, 'comfyui-electron-updater'));
-      addRestrictedPath('updaterCache', path.join(localAppData, '@comfyorgcomfyui-electron-updater'));
+      addRestrictedPath('updaterCache', path.join(localAppData, 'hanzo-studio-electron-updater'));
+      addRestrictedPath('updaterCache', path.join(localAppData, '@comfyorghanzo-studio-electron-updater'));
     }
 
     // 5. OneDrive
@@ -206,14 +206,14 @@ export function registerPathHandlers() {
       return {
         appData: app.getPath('appData'),
         appPath: app.getAppPath(),
-        defaultInstallPath: path.join(documentsPath, 'ComfyUI'),
+        defaultInstallPath: path.join(documentsPath, 'Hanzo Studio'),
       };
     }
 
     return {
       appData: app.getPath('appData'),
       appPath: app.getAppPath(),
-      defaultInstallPath: path.join(documentsPath, 'ComfyUI'),
+      defaultInstallPath: path.join(documentsPath, 'Hanzo Studio'),
     };
   });
 
@@ -329,13 +329,13 @@ export function registerPathHandlers() {
     }
   );
   /**
-   * Validate whether the given path is a valid ComfyUI source path.
+   * Validate whether the given path is a valid Hanzo Studio source path.
    */
   ipcMain.handle(IPC_CHANNELS.VALIDATE_COMFYUI_SOURCE, (event, path: string): { isValid: boolean; error?: string } => {
-    const isValid = ComfyConfigManager.isComfyUIDirectory(path);
+    const isValid = ComfyConfigManager.isHanzo StudioDirectory(path);
     return {
       isValid,
-      error: isValid ? undefined : 'Invalid ComfyUI source path',
+      error: isValid ? undefined : 'Invalid Hanzo Studio source path',
     };
   });
 

@@ -21,7 +21,7 @@ const mockAppWindow = {
   loadPage: vi.fn(),
   send: vi.fn(),
   sendServerStartProgress: vi.fn(),
-  loadComfyUI: vi.fn(),
+  loadHanzo Studio: vi.fn(),
 };
 
 vi.mock('@/main-process/appWindow', () => ({

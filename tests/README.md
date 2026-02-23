@@ -17,7 +17,7 @@ End-to-end tests are run with Playwright. Tests are run sequentially.
 Tests are intended to be run on virtualised, disposable systems, such as CI runners.
 
 > [!CAUTION]
-> End-to-end tests erase settings and other app data. They will delete ComfyUI directories without warning.
+> End-to-end tests erase settings and other app data. They will delete Hanzo Studio directories without warning.
 
 ### Enabling E2E tests
 
@@ -37,8 +37,8 @@ yarn run test:e2e
 
 App data directories:
 
-- `%APPDATA%\ComfyUI` (Windows)
-- `Application Support/ComfyUI` (Mac)
+- `%APPDATA%\Hanzo Studio` (Windows)
+- `Application Support/Hanzo Studio` (Mac)
 
 ### Updating screenshots (snapshots)
 

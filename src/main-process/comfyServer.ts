@@ -19,9 +19,9 @@ import { AppWindow } from './appWindow';
 type ServerStartError = 'ModuleNotFoundError';
 
 /**
- * A class that manages the ComfyUI server.
+ * A class that manages the Hanzo Studio server.
  *
- * This class is responsible for starting and stopping the ComfyUI server,
+ * This class is responsible for starting and stopping the Hanzo Studio server,
  * as well as handling the server's lifecycle events.
  *
  * isRunning: The server process is running.
@@ -40,14 +40,14 @@ export class ComfyServer implements HasTelemetry {
    */
   public static readonly CHECK_INTERVAL = 1000; // Check every second
 
-  /** The path to the ComfyUI main python script. */
-  readonly mainScriptPath = path.join(getAppResourcesPath(), 'ComfyUI', 'main.py');
+  /** The path to the Hanzo Studio main python script. */
+  readonly mainScriptPath = path.join(getAppResourcesPath(), 'Hanzo Studio', 'main.py');
 
   /**
-   * The path to the ComfyUI web root. This directory should host compiled
-   * ComfyUI web assets.
+   * The path to the Hanzo Studio web root. This directory should host compiled
+   * Hanzo Studio web assets.
    */
-  readonly webRootPath = path.join(getAppResourcesPath(), 'ComfyUI', 'web_custom_versions', 'desktop_app');
+  readonly webRootPath = path.join(getAppResourcesPath(), 'Hanzo Studio', 'web_custom_versions', 'desktop_app');
 
   readonly userDirectoryPath: string;
   readonly inputDirectoryPath: string;
@@ -96,7 +96,7 @@ export class ComfyServer implements HasTelemetry {
   }
 
   /**
-   * Core arguments to pass to the ComfyUI server to ensure electron app
+   * Core arguments to pass to the Hanzo Studio server to ensure electron app
    * works as expected.
    */
   get coreLaunchArgs() {
@@ -143,17 +143,17 @@ export class ComfyServer implements HasTelemetry {
   @trackEvent('comfyui:server_start')
   async start() {
     if (this.isRunning) {
-      const message = 'ComfyUI server is already running';
+      const message = 'Hanzo Studio server is already running';
       log.error(message);
       throw new Error(message);
     }
 
     ComfySettings.lockWrites();
     await ComfyServerConfig.addAppBundledCustomNodesToConfig();
-    await rotateLogFiles(app.getPath('logs'), LogFile.ComfyUI, 50);
+    await rotateLogFiles(app.getPath('logs'), LogFile.Hanzo Studio, 50);
     return new Promise<void>((resolve, reject) => {
       const comfyUILog = log.create({ logId: 'comfyui' });
-      comfyUILog.transports.file.fileName = LogFile.ComfyUI;
+      comfyUILog.transports.file.fileName = LogFile.Hanzo Studio;
 
       comfyUILog.transports.file.transforms.unshift(removeAnsiCodesTransform);
 
@@ -172,7 +172,7 @@ export class ComfyServer implements HasTelemetry {
 
       const rejectOnError = (err: Error) => {
         this.comfyServerProcess = null;
-        log.error('Failed to start ComfyUI:', err);
+        log.error('Failed to start Hanzo Studio:', err);
         reject(err);
       };
       comfyServerProcess.on('error', rejectOnError);
@@ -216,7 +216,7 @@ export class ComfyServer implements HasTelemetry {
         return;
       }
 
-      log.info('Killing ComfyUI python server.');
+      log.info('Killing Hanzo Studio python server.');
       // Set up a timeout in case the process doesn't exit
       const timeout = setTimeout(() => {
         reject(new Error('Timeout: Python server did not exit within 10 seconds'));

@@ -23,7 +23,7 @@ export default defineConfig((env) => {
     },
     server: {
       watch: {
-        ignored: ['**/assets/ComfyUI/**', 'venv/**'],
+        ignored: ['**/assets/Hanzo Studio/**', 'venv/**'],
       },
     },
     plugins: [
@@ -35,7 +35,7 @@ export default defineConfig((env) => {
             project: 'desktop',
             authToken: process.env.SENTRY_AUTH_TOKEN,
             release: {
-              name: `ComfyUI@${version}`,
+              name: `Hanzo Studio@${version}`,
             },
           })
         : undefined,

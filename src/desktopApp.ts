@@ -183,7 +183,7 @@ export class DesktopApp implements HasTelemetry {
     }
 
     /**
-     * Shows the starting server page and starts the ComfyUI server.
+     * Shows the starting server page and starts the Hanzo Studio server.
      * @param comfyDesktopApp The comfy desktop app instance.
      * @param serverArgs The server args to use to start the server.
      */
@@ -198,7 +198,7 @@ export class DesktopApp implements HasTelemetry {
      */
     async function loadFrontend(serverArgs: ServerArgs): Promise<void> {
       appWindow.sendServerStartProgress(ProgressStatus.READY);
-      await appWindow.loadComfyUI(serverArgs);
+      await appWindow.loadHanzo Studio(serverArgs);
 
       appState.setInstallStage(createInstallStageInfo(InstallStage.READY, { progress: 100 }));
       appState.emitLoaded();

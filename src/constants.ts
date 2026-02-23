@@ -26,7 +26,7 @@ export const IPC_CHANNELS = {
   TERMINAL_ON_OUTPUT: 'terminal-output',
   GET_SYSTEM_PATHS: 'get-system-paths',
   VALIDATE_INSTALL_PATH: 'validate-install-path',
-  VALIDATE_COMFYUI_SOURCE: 'validate-comfyui-source',
+  VALIDATE_COMFYUI_SOURCE: 'validate-hanzo-studio-source',
   SHOW_DIRECTORY_PICKER: 'show-directory-picker',
   INSTALL_COMFYUI: 'install-comfyui',
   CHANGE_THEME: 'change-theme',
@@ -67,12 +67,12 @@ export enum ProgressStatus {
    */
   PYTHON_SETUP = 'python-setup',
   /**
-   * Starting ComfyUI server.
+   * Starting Hanzo Studio server.
    */
   STARTING_SERVER = 'starting-server',
   /**
    * Ending state.
-   * The ComfyUI server successfully started. ComfyUI loaded into the main window.
+   * The Hanzo Studio server successfully started. Hanzo Studio loaded into the main window.
    */
   READY = 'ready',
   /**
@@ -103,7 +103,7 @@ export const InstallStage = {
   PYTHON_ENVIRONMENT_SETUP: 'python_environment_setup',
   INSTALLING_REQUIREMENTS: 'installing_requirements',
   INSTALLING_PYTORCH: 'installing_pytorch',
-  INSTALLING_COMFYUI_REQUIREMENTS: 'installing_comfyui_requirements',
+  INSTALLING_COMFYUI_REQUIREMENTS: 'installing_hanzo_studio_requirements',
   INSTALLING_MANAGER_REQUIREMENTS: 'installing_manager_requirements',
   MIGRATING_CUSTOM_NODES: 'migrating_custom_nodes',
 
@@ -137,21 +137,21 @@ export const MigrationItems: MigrationItem[] = [
   {
     id: 'models',
     label: 'Models',
-    description: 'Reference model files from existing ComfyUI installations. (No copy)',
+    description: 'Reference model files from existing Hanzo Studio installations. (No copy)',
   },
   {
     id: 'custom_nodes',
     label: 'Custom Nodes',
-    description: 'Reinstall custom nodes from existing ComfyUI installations.',
+    description: 'Reinstall custom nodes from existing Hanzo Studio installations.',
   },
 ] as const;
 
 export interface ServerArgs {
-  /** The host to use for the ComfyUI server. */
+  /** The host to use for the Hanzo Studio server. */
   listen: string;
-  /** The port to use for the ComfyUI server. */
+  /** The port to use for the Hanzo Studio server. */
   port: string;
-  /** Extra arguments to pass to the ComfyUI server. */
+  /** Extra arguments to pass to the Hanzo Studio server. */
   [key: string]: string | number;
 }
 export const DEFAULT_SERVER_ARGS: ServerArgs = {
@@ -219,8 +219,8 @@ export const NVIDIA_TORCH_PACKAGES: string[] = [
 
 /** The log files used by the desktop process. */
 export enum LogFile {
-  /** The ComfyUI server log file. */
-  ComfyUI = 'comfyui.log',
+  /** The Hanzo Studio server log file. */
+  Hanzo Studio = 'comfyui.log',
   /** The desktop process log file. */
   Main = 'main.log',
 }

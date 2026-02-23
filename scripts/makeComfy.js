@@ -4,28 +4,28 @@ import path from 'node:path';
 
 import pkg from './getPackage.js';
 
-const comfyRepo = 'https://github.com/comfyanonymous/ComfyUI';
-const managerRepo = 'https://github.com/ltdrdata/ComfyUI-Manager';
+const comfyRepo = 'https://github.com/hanzoai/studio';
+const managerRepo = 'https://github.com/ltdrdata/Hanzo Manager';
 
 /** Suppress warning about detached head */
 const noWarning = '-c advice.detachedHead=false';
 
 if (pkg.config.comfyUI.optionalBranch) {
   // Checkout branch.
-  execAndLog(`git clone ${comfyRepo} --depth 1 --branch ${pkg.config.comfyUI.optionalBranch} assets/ComfyUI`);
+  execAndLog(`git clone ${comfyRepo} --depth 1 --branch ${pkg.config.comfyUI.optionalBranch} assets/Hanzo Studio`);
 } else {
   // Checkout tag as branch.
-  execAndLog(`git ${noWarning} clone ${comfyRepo} --depth 1 --branch v${pkg.config.comfyUI.version} assets/ComfyUI`);
+  execAndLog(`git ${noWarning} clone ${comfyRepo} --depth 1 --branch v${pkg.config.comfyUI.version} assets/Hanzo Studio`);
 }
-const assetsComfyPath = path.join('assets', 'ComfyUI');
+const assetsComfyPath = path.join('assets', 'Hanzo Studio');
 const managerRequirementsPath = path.join(assetsComfyPath, 'manager_requirements.txt');
 
 if (fs.existsSync(managerRequirementsPath)) {
-  console.log('Detected manager_requirements.txt, skipping legacy ComfyUI-Manager clone.');
+  console.log('Detected manager_requirements.txt, skipping legacy Hanzo Manager clone.');
 } else {
-  execAndLog(`git clone ${managerRepo} assets/ComfyUI/custom_nodes/ComfyUI-Manager`);
+  execAndLog(`git clone ${managerRepo} assets/Hanzo Studio/custom_nodes/Hanzo Manager`);
   execAndLog(
-    `cd assets/ComfyUI/custom_nodes/ComfyUI-Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
+    `cd assets/Hanzo Studio/custom_nodes/Hanzo Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
   );
 }
 execAndLog(`yarn run make:frontend`);

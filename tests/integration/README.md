@@ -1,6 +1,6 @@
-# ComfyUI Desktop Integration Testing Guide
+# Hanzo Desktop Integration Testing Guide
 
-This document provides a comprehensive overview of the integration testing infrastructure for ComfyUI Desktop. It is designed to enable Claude Code engineers to immediately write effective integration tests without needing to analyze the infrastructure files.
+This document provides a comprehensive overview of the integration testing infrastructure for Hanzo Desktop. It is designed to enable Claude Code engineers to immediately write effective integration tests without needing to analyze the infrastructure files.
 
 ## Core Testing Framework
 
@@ -63,10 +63,10 @@ Manages the application's file system state and configuration:
 
 ```typescript
 class TestEnvironment {
-  appDataDir: string; // ComfyUI app data directory
+  appDataDir: string; // Hanzo Studio app data directory
   configPath: string; // config.json location
   installLocation: TempDirectory; // Temporary install directory
-  defaultInstallLocation: string; // Default ComfyUI install path
+  defaultInstallLocation: string; // Default Hanzo Studio install path
 
   // Test helper methods:
   readConfig(); // Read desktop settings
@@ -337,7 +337,7 @@ const timeout = process.env.CI ? 60 * 1000 : 30 * 1000;
 
 // Platform-specific paths handled by utilities
 getDefaultInstallLocation(); // Returns platform-appropriate path
-getComfyUIAppDataPath(); // Returns platform-specific app data
+getHanzo StudioAppDataPath(); // Returns platform-specific app data
 ```
 
 ### 5. Working with Async Operations
@@ -372,7 +372,7 @@ Available from `tests/shared/utils.ts`:
 ```typescript
 // Path utilities
 pathExists(path: string, permission?: FilePermission): Promise<boolean>
-getComfyUIAppDataPath(): string          // Platform-specific app data
+getHanzo StudioAppDataPath(): string          // Platform-specific app data
 getDefaultInstallLocation(): string      // Platform-specific install location
 addRandomSuffix(str: string): string     // Add UUID suffix
 
@@ -446,4 +446,4 @@ Tests run automatically in CI with:
 9. **Check CI behavior** with `process.env.CI`
 10. **Use shared utilities** for common operations
 
-This infrastructure provides a robust, maintainable way to test the ComfyUI Desktop application across different states and scenarios. The fixture-based approach ensures consistent test behavior and automatic cleanup, while the project structure enables both isolated and sequential testing scenarios.
+This infrastructure provides a robust, maintainable way to test the Hanzo Desktop application across different states and scenarios. The fixture-based approach ensures consistent test behavior and automatic cleanup, while the project structure enables both isolated and sequential testing scenarios.

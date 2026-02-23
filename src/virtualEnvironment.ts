@@ -133,7 +133,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   readonly pythonInterpreterPath: string;
   readonly comfyUIRequirementsPath: string;
   readonly comfyUIManagerRequirementsPath: string;
-  readonly legacyComfyUIManagerRequirementsPath: string;
+  readonly legacyHanzo StudioManagerRequirementsPath: string;
   readonly selectedDevice: TorchDeviceType;
   readonly telemetry: ITelemetry;
   readonly pythonMirror?: string;
@@ -212,18 +212,18 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     // uv defaults to .venv
     this.venvPath = path.join(basePath, '.venv');
     const resourcesPath = app.isPackaged ? path.join(process.resourcesPath) : path.join(app.getAppPath(), 'assets');
-    this.comfyUIRequirementsPath = path.join(resourcesPath, 'ComfyUI', 'requirements.txt');
-    const managerRequirementsPath = path.join(resourcesPath, 'ComfyUI', 'manager_requirements.txt');
-    this.legacyComfyUIManagerRequirementsPath = path.join(
+    this.comfyUIRequirementsPath = path.join(resourcesPath, 'Hanzo Studio', 'requirements.txt');
+    const managerRequirementsPath = path.join(resourcesPath, 'Hanzo Studio', 'manager_requirements.txt');
+    this.legacyHanzo StudioManagerRequirementsPath = path.join(
       resourcesPath,
-      'ComfyUI',
+      'Hanzo Studio',
       'custom_nodes',
-      'ComfyUI-Manager',
+      'Hanzo Manager',
       'requirements.txt'
     );
     this.comfyUIManagerRequirementsPath = this.resolveManagerRequirementsPath(
       managerRequirementsPath,
-      this.legacyComfyUIManagerRequirementsPath
+      this.legacyHanzo StudioManagerRequirementsPath
     );
 
     this.cacheDir = path.join(basePath, 'uv-cache');
@@ -339,7 +339,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
 
         // Python imports failed
         throw new PythonImportVerificationError(
-          'We were unable to verify the state of your Python virtual environment. This will likely prevent ComfyUI from starting.'
+          'We were unable to verify the state of your Python virtual environment. This will likely prevent Hanzo Studio from starting.'
         );
       }
 
@@ -420,7 +420,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     }
 
     // Ensure Manager requirements are installed even if the compiled file did not include them.
-    await this.installComfyUIManagerRequirements(callbacks);
+    await this.installHanzo StudioManagerRequirements(callbacks);
   }
 
   /**
@@ -611,13 +611,13 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   }
 
   /**
-   * Installs PyTorch, ComfyUI core, and ComfyUI Manager, using pip install rather than compiled requirements.
+   * Installs PyTorch, Hanzo Studio core, and Hanzo Manager, using pip install rather than compiled requirements.
    * @param callbacks The callbacks to use for the command.
    */
   private async manualInstall(callbacks?: ProcessCallbacks): Promise<void> {
     await this.installPytorch(callbacks);
-    await this.installComfyUIRequirements(callbacks);
-    await this.installComfyUIManagerRequirements(callbacks);
+    await this.installHanzo StudioRequirements(callbacks);
+    await this.installHanzo StudioManagerRequirements(callbacks);
   }
 
   /**
@@ -808,18 +808,18 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   }
 
   /**
-   * Installs the requirements for ComfyUI core using `requirements.txt`.
+   * Installs the requirements for Hanzo Studio core using `requirements.txt`.
    * @param callbacks The callbacks to use for the command.
    */
-  async installComfyUIRequirements(callbacks?: ProcessCallbacks): Promise<void> {
+  async installHanzo StudioRequirements(callbacks?: ProcessCallbacks): Promise<void> {
     useAppState().setInstallStage(
       createInstallStageInfo(InstallStage.INSTALLING_COMFYUI_REQUIREMENTS, {
         progress: 45,
-        message: 'Installing ComfyUI requirements',
+        message: 'Installing Hanzo Studio requirements',
       })
     );
 
-    log.info(`Installing ComfyUI requirements from ${this.comfyUIRequirementsPath}`);
+    log.info(`Installing Hanzo Studio requirements from ${this.comfyUIRequirementsPath}`);
     const installCmd = getPipInstallArgs({
       requirementsFile: this.comfyUIRequirementsPath,
       packages: [],
@@ -828,30 +828,30 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     });
     const { exitCode } = await this.runUvCommandAsync(installCmd, callbacks);
     if (exitCode !== 0) {
-      throw new Error(`Failed to install ComfyUI requirements.txt: exit code ${exitCode}`);
+      throw new Error(`Failed to install Hanzo Studio requirements.txt: exit code ${exitCode}`);
     }
   }
 
   /**
-   * Installs the requirements for ComfyUI Manager using `requirements.txt`.
+   * Installs the requirements for Hanzo Manager using `requirements.txt`.
    * @param callbacks The callbacks to use for the command.
    */
-  async installComfyUIManagerRequirements(callbacks?: ProcessCallbacks): Promise<void> {
+  async installHanzo StudioManagerRequirements(callbacks?: ProcessCallbacks): Promise<void> {
     useAppState().setInstallStage(
       createInstallStageInfo(InstallStage.INSTALLING_MANAGER_REQUIREMENTS, {
         progress: 60,
-        message: 'Installing ComfyUI Manager requirements',
+        message: 'Installing Hanzo Manager requirements',
       })
     );
 
     if (!(await pathAccessible(this.comfyUIManagerRequirementsPath))) {
       throw new Error(
         `Manager requirements file was not found at ${this.comfyUIManagerRequirementsPath}. ` +
-          `If you are using a legacy build, ensure the ComfyUI-Manager custom node is present at ${this.legacyComfyUIManagerRequirementsPath}.`
+          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzo StudioManagerRequirementsPath}.`
       );
     }
 
-    log.info(`Installing ComfyUIManager requirements from ${this.comfyUIManagerRequirementsPath}`);
+    log.info(`Installing Hanzo StudioManager requirements from ${this.comfyUIManagerRequirementsPath}`);
     const installCmd = getPipInstallArgs({
       requirementsFile: this.comfyUIManagerRequirementsPath,
       packages: [],
@@ -860,7 +860,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     });
     const { exitCode } = await this.runUvCommandAsync(installCmd, callbacks);
     if (exitCode !== 0) {
-      throw new Error(`Failed to install ComfyUI-Manager requirements.txt: exit code ${exitCode}`);
+      throw new Error(`Failed to install Hanzo Manager requirements.txt: exit code ${exitCode}`);
     }
   }
 
@@ -881,7 +881,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   }
 
   /**
-   * Checks if the virtual environment has all the required packages of ComfyUI core.
+   * Checks if the virtual environment has all the required packages of Hanzo Studio core.
    *
    * Parses the text output of `uv pip install --dry-run -r requirements.txt`.
    * @returns `'OK'` if pip install does not detect any missing packages,
@@ -916,8 +916,8 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
 
     // Manager upgrade in 0.4.18 - uv, toml (exactly)
     const isManagerUpgrade = (output: string) => {
-      // Match the original case: 2 packages (uv + toml) | Added in https://github.com/ltdrdata/ComfyUI-Manager/commit/816a53a7b1a057af373c458ebf80aaae565b996b
-      // Match the new case: 1 package (chardet) | Added in https://github.com/ltdrdata/ComfyUI-Manager/commit/60a5e4f2614c688b41a1ebaf0694953eb26db38a
+      // Match the original case: 2 packages (uv + toml) | Added in https://github.com/ltdrdata/Hanzo Manager/commit/816a53a7b1a057af373c458ebf80aaae565b996b
+      // Match the new case: 1 package (chardet) | Added in https://github.com/ltdrdata/Hanzo Manager/commit/60a5e4f2614c688b41a1ebaf0694953eb26db38a
       const anyCombination = /\bWould install [1-3] packages?(\s+\+ (toml|uv|chardet)==[\d.]+){1,3}\s*$/;
       return anyCombination.test(output);
     };
@@ -930,14 +930,14 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
         // Reject upgrade if removing an unrecognised package
         if (
           line.search(
-            /^\s*- (?!aiohttp|av|yarl|comfyui-workflow-templates|comfyui-embedded-docs|pydantic|pydantic-core|pydantic-settings|annotated-types|typing-inspection|alembic|sqlalchemy|greenlet|mako|python-dotenv).*==/
+            /^\s*- (?!aiohttp|av|yarl|hanzo-studio-workflow-templates|hanzo-studio-embedded-docs|pydantic|pydantic-core|pydantic-settings|annotated-types|typing-inspection|alembic|sqlalchemy|greenlet|mako|python-dotenv).*==/
           ) !== -1
         )
           return false;
         if (line.search(/^\s*\+ /) !== -1) {
           if (
             line.search(
-              /^\s*\+ (aiohttp|av|yarl|comfyui-workflow-templates|comfyui-embedded-docs|pydantic|pydantic-core|pydantic-settings|annotated-types|typing-inspection|alembic|sqlalchemy|greenlet|mako|python-dotenv)==/
+              /^\s*\+ (aiohttp|av|yarl|hanzo-studio-workflow-templates|hanzo-studio-embedded-docs|pydantic|pydantic-core|pydantic-settings|annotated-types|typing-inspection|alembic|sqlalchemy|greenlet|mako|python-dotenv)==/
             ) === -1
           )
             return false;
@@ -952,7 +952,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     if (!(await pathAccessible(this.comfyUIManagerRequirementsPath))) {
       throw new Error(
         `Manager requirements file was not found at ${this.comfyUIManagerRequirementsPath}. ` +
-          `If you are using a legacy build, ensure the ComfyUI-Manager custom node is present at ${this.legacyComfyUIManagerRequirementsPath}.`
+          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzo StudioManagerRequirementsPath}.`
       );
     }
     const managerOutput = await checkRequirements(this.comfyUIManagerRequirementsPath);
@@ -1080,7 +1080,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   }
 
   /**
-   * Reinstalls the required packages for ComfyUI core.
+   * Reinstalls the required packages for Hanzo Studio core.
    */
   async reinstallRequirements(onData: (data: string) => void) {
     const callbacks = { onStdout: onData };

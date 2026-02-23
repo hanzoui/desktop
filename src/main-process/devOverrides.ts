@@ -7,13 +7,13 @@ import log from 'electron-log/main';
  * In production, overrides are disabled (`undefined`).  Use the `--dev-mode` command line argument to re-enable them.
  */
 export class DevOverrides {
-  /** The host to use for the ComfyUI server. */
+  /** The host to use for the Hanzo Studio server. */
   public readonly COMFY_HOST?: string;
-  /** The port to use for the ComfyUI server. */
+  /** The port to use for the Hanzo Studio server. */
   public readonly COMFY_PORT?: string;
   /** Forces the Desktop UI to be loaded from this URL (e.g. vite dev server). */
   public readonly DEV_SERVER_URL?: string;
-  /** Loads the ComfyUI frontend from this URL (e.g. vite dev server). */
+  /** Loads the Hanzo Studio frontend from this URL (e.g. vite dev server). */
   public readonly DEV_FRONTEND_URL?: string;
   /** Whether to use an external server instead of starting one locally. */
   public readonly USE_EXTERNAL_SERVER?: string;

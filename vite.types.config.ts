@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(import.meta.dirname, 'src/main_types.ts'),
-      name: 'comfyui-electron-api',
+      name: 'hanzo-studio-electron-api',
       fileName: 'index',
       formats: ['es'],
     },

@@ -9,7 +9,7 @@
   "appFiles": [
     "src/**",
     "scripts/**",
-    "assets/ComfyUI/**",
+    "assets/Hanzo Studio/**",
     "assets/UI/**",
     "assets/requirements/**",
     "assets/uv/**",
@@ -39,5 +39,5 @@
     "icon": "./assets/UI/Comfy_Icon_Windows.png",
     "nsisInclude": "./scripts/installer.nsh"
   },
-  "updateUrlBase": "https://updater.comfy.org"
+  "updateUrlBase": "https://updater.hanzo.ai"
 }

@@ -67,8 +67,8 @@ export interface IComfySettings extends FrontendSettingsCache {
   set<K extends keyof ComfySettingsData>(key: K, value: ComfySettingsData[K]): void;
   /**
    * Overwrites the settings file on disk with the copy of settings in memory.
-   * Can only be called before the ComfyUI server starts.
-   * @throws Error if called after the ComfyUI server has started
+   * Can only be called before the Hanzo Studio server starts.
+   * @throws Error if called after the Hanzo Studio server has started
    */
   saveSettings(): Promise<void>;
 }
@@ -76,9 +76,9 @@ export interface IComfySettings extends FrontendSettingsCache {
 /**
  * ComfySettings is a class that loads settings from the comfy.settings.json file.
  *
- * This file is exclusively written to by the ComfyUI server once it starts.
+ * This file is exclusively written to by the Hanzo Studio server once it starts.
  * The Electron process can only write to this file during initialization, before
- * the ComfyUI server starts.
+ * the Hanzo Studio server starts.
  *
  * @see {@link FrontendSettingsCache} read-only interface
  * @see {@link IComfySettings} read-write interface
@@ -94,7 +94,7 @@ export class ComfySettings implements IComfySettings {
 
   /**
    * Locks the settings to prevent further modifications.
-   * Called when the ComfyUI server starts, as it takes ownership of the settings file.
+   * Called when the Hanzo Studio server starts, as it takes ownership of the settings file.
    */
   static lockWrites() {
     ComfySettings.writeLocked = true;
@@ -155,7 +155,7 @@ export class ComfySettings implements IComfySettings {
 
   /**
    * Static factory method. Loads the settings from disk.
-   * @param basePath The base path where ComfyUI is installed
+   * @param basePath The base path where Hanzo Studio is installed
    * @returns The newly created instance
    */
   static async load(basePath: string): Promise<ComfySettings> {
