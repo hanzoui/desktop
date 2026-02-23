@@ -133,7 +133,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   readonly pythonInterpreterPath: string;
   readonly comfyUIRequirementsPath: string;
   readonly comfyUIManagerRequirementsPath: string;
-  readonly legacyHanzo StudioManagerRequirementsPath: string;
+  readonly legacyHanzoStudioManagerRequirementsPath: string;
   readonly selectedDevice: TorchDeviceType;
   readonly telemetry: ITelemetry;
   readonly pythonMirror?: string;
@@ -214,7 +214,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     const resourcesPath = app.isPackaged ? path.join(process.resourcesPath) : path.join(app.getAppPath(), 'assets');
     this.comfyUIRequirementsPath = path.join(resourcesPath, 'Hanzo Studio', 'requirements.txt');
     const managerRequirementsPath = path.join(resourcesPath, 'Hanzo Studio', 'manager_requirements.txt');
-    this.legacyHanzo StudioManagerRequirementsPath = path.join(
+    this.legacyHanzoStudioManagerRequirementsPath = path.join(
       resourcesPath,
       'Hanzo Studio',
       'custom_nodes',
@@ -223,7 +223,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     );
     this.comfyUIManagerRequirementsPath = this.resolveManagerRequirementsPath(
       managerRequirementsPath,
-      this.legacyHanzo StudioManagerRequirementsPath
+      this.legacyHanzoStudioManagerRequirementsPath
     );
 
     this.cacheDir = path.join(basePath, 'uv-cache');
@@ -420,7 +420,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     }
 
     // Ensure Manager requirements are installed even if the compiled file did not include them.
-    await this.installHanzo StudioManagerRequirements(callbacks);
+    await this.installHanzoStudioManagerRequirements(callbacks);
   }
 
   /**
@@ -617,7 +617,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
   private async manualInstall(callbacks?: ProcessCallbacks): Promise<void> {
     await this.installPytorch(callbacks);
     await this.installHanzo StudioRequirements(callbacks);
-    await this.installHanzo StudioManagerRequirements(callbacks);
+    await this.installHanzoStudioManagerRequirements(callbacks);
   }
 
   /**
@@ -836,7 +836,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
    * Installs the requirements for Hanzo Manager using `requirements.txt`.
    * @param callbacks The callbacks to use for the command.
    */
-  async installHanzo StudioManagerRequirements(callbacks?: ProcessCallbacks): Promise<void> {
+  async installHanzoStudioManagerRequirements(callbacks?: ProcessCallbacks): Promise<void> {
     useAppState().setInstallStage(
       createInstallStageInfo(InstallStage.INSTALLING_MANAGER_REQUIREMENTS, {
         progress: 60,
@@ -847,11 +847,11 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     if (!(await pathAccessible(this.comfyUIManagerRequirementsPath))) {
       throw new Error(
         `Manager requirements file was not found at ${this.comfyUIManagerRequirementsPath}. ` +
-          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzo StudioManagerRequirementsPath}.`
+          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzoStudioManagerRequirementsPath}.`
       );
     }
 
-    log.info(`Installing Hanzo StudioManager requirements from ${this.comfyUIManagerRequirementsPath}`);
+    log.info(`Installing HanzoStudioManager requirements from ${this.comfyUIManagerRequirementsPath}`);
     const installCmd = getPipInstallArgs({
       requirementsFile: this.comfyUIManagerRequirementsPath,
       packages: [],
@@ -952,7 +952,7 @@ export class VirtualEnvironment implements HasTelemetry, PythonExecutor {
     if (!(await pathAccessible(this.comfyUIManagerRequirementsPath))) {
       throw new Error(
         `Manager requirements file was not found at ${this.comfyUIManagerRequirementsPath}. ` +
-          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzo StudioManagerRequirementsPath}.`
+          `If you are using a legacy build, ensure the Hanzo Manager custom node is present at ${this.legacyHanzoStudioManagerRequirementsPath}.`
       );
     }
     const managerOutput = await checkRequirements(this.comfyUIManagerRequirementsPath);

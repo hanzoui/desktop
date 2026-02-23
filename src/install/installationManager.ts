@@ -381,7 +381,7 @@ export class InstallationManager implements HasTelemetry {
     const callbacks = createProcessCallbacks(this.appWindow, { logStderrAsInfo: true });
     try {
       await installation.virtualEnvironment.installHanzo StudioRequirements(callbacks);
-      await installation.virtualEnvironment.installHanzo StudioManagerRequirements(callbacks);
+      await installation.virtualEnvironment.installHanzoStudioManagerRequirements(callbacks);
       await this.warnIfNvidiaDriverTooOld(installation.virtualEnvironment.selectedDevice);
       // Disable automatic NVIDIA torch upgrades so users control large downloads.
       // await installation.virtualEnvironment.ensureRecommendedNvidiaTorch(callbacks);
