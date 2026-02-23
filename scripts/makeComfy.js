@@ -23,9 +23,9 @@ const managerRequirementsPath = path.join(assetsComfyPath, 'manager_requirements
 if (fs.existsSync(managerRequirementsPath)) {
   console.log('Detected manager_requirements.txt, skipping legacy Hanzo Manager clone.');
 } else {
-  execAndLog(`git clone ${managerRepo} assets/HanzoStudio/custom_nodes/Hanzo Manager`);
+  execAndLog(`git clone ${managerRepo} assets/HanzoStudio/custom_nodes/ComfyUI-Manager`);
   execAndLog(
-    `cd assets/HanzoStudio/custom_nodes/Hanzo Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
+    `cd assets/HanzoStudio/custom_nodes/ComfyUI-Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
   );
 }
 execAndLog(`yarn run make:frontend`);
