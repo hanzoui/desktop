@@ -36,7 +36,7 @@ function verifyConfig(config) {
   if (fs.existsSync(managerRequirementsPath)) {
     required.push('HanzoStudio/manager_requirements.txt');
   } else if (fs.existsSync(legacyManagerPath)) {
-    required.push('HanzoStudio/custom_nodes/Hanzo Manager');
+    required.push('HanzoStudio/custom_nodes/ComfyUI-Manager');
   } else {
     required.push('HanzoStudio/manager_requirements.txt');
   }

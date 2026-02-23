@@ -19,7 +19,7 @@ if (!version) {
   process.exit(1);
 }
 
-const frontendRepo = 'https://github.com/hanzoui/studio_frontend';
+const frontendRepo = 'https://github.com/hanzoui/frontend';
 
 if (frontend.optionalBranch) {
   // Optional branch, no release; build from source
@@ -89,7 +89,7 @@ if (frontend.optionalBranch) {
   }
 } else {
   // Download normal frontend release zip
-  const url = `https://github.com/hanzoui/studio_frontend/releases/download/v${version}/dist.zip`;
+  const url = `https://github.com/hanzoui/frontend/releases/download/v${version}/dist.zip`;
 
   const downloadPath = 'temp_frontend.zip';
   const extractPath = 'assets/HanzoStudio/web_custom_versions/desktop_app';

@@ -20,9 +20,9 @@ concurrency:
 
 env:
   # Define uv pip compile commands as environment variables for consistency
-  UV_CMD_WINDOWS_CPU: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/windows_cpu.compiled --index-url https://pypi.org/simple'
-  UV_CMD_WINDOWS_NVIDIA: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match --override assets/override.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu129 -o assets/requirements/windows_nvidia.compiled'
-  UV_CMD_MACOS: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/macos.compiled --override assets/override.txt --index-url https://pypi.org/simple'
+  UV_CMD_WINDOWS_CPU: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/ComfyUI-Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/windows_cpu.compiled --index-url https://pypi.org/simple'
+  UV_CMD_WINDOWS_NVIDIA: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/ComfyUI-Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match --override assets/override.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu129 -o assets/requirements/windows_nvidia.compiled'
+  UV_CMD_MACOS: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/ComfyUI-Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/macos.compiled --override assets/override.txt --index-url https://pypi.org/simple'
   # PR comment messages
   PR_MSG_SUCCESS: '✅ Compiled requirements have been updated successfully!'
   PR_MSG_NO_CHANGES: 'ℹ️ No changes needed - compiled requirements are already up to date.'
@@ -118,7 +118,7 @@ jobs:
         with:
           repository: ltdrdata/ComfyUI-Manager
           ref: ${{ steps.versions.outputs.manager_commit }}
-          path: assets/HanzoStudio/custom_nodes/Hanzo Manager
+          path: assets/HanzoStudio/custom_nodes/ComfyUI-Manager
 
       - name: Setup Python
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
@@ -194,7 +194,7 @@ jobs:
         with:
           repository: ltdrdata/ComfyUI-Manager
           ref: ${{ steps.versions.outputs.manager_commit }}
-          path: assets/HanzoStudio/custom_nodes/Hanzo Manager
+          path: assets/HanzoStudio/custom_nodes/ComfyUI-Manager
 
       - name: Setup Python
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0

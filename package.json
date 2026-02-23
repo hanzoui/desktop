@@ -25,7 +25,7 @@
     "clean": "rimraf .vite dist out",
     "clean:uv": "rimraf assets/uv",
     "clean:assets": "rimraf assets/.env assets/HanzoStudio assets/python.tgz && yarn run clean:assets:git && yarn run clean:uv",
-    "clean:assets:git": "rimraf assets/HanzoStudio/.git assets/HanzoStudio/custom_nodes/Hanzo Manager/.git",
+    "clean:assets:git": "rimraf assets/HanzoStudio/.git assets/HanzoStudio/custom_nodes/ComfyUI-Manager/.git",
     "clean:slate": "yarn run clean && yarn run clean:assets && rimraf node_modules",
     "download:uv": "node scripts/downloadUV.js",
     "download-frontend": "node scripts/downloadFrontend.js",
