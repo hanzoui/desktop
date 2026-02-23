@@ -107,7 +107,7 @@ comfyui
 !.vscode/tasks.json
 
 # built assets
-assets/Hanzo Studio
+assets/HanzoStudio
 assets/cpython*.tar.gz
 assets/python
 assets/requirements.*

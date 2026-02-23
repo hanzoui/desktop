@@ -198,7 +198,7 @@ describe('InstallationManager', () => {
           });
           const originalGetPath = vi.mocked(app.getPath).getMockImplementation();
           vi.mocked(app.getPath).mockImplementation((name) => {
-            if (name === 'exe') return 'valid/app/Hanzo Studio.exe';
+            if (name === 'exe') return 'valid/app/HanzoStudio.exe';
             return originalGetPath ? originalGetPath(name) : '/mock/app/path';
           });
           return () => {

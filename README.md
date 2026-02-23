@@ -51,13 +51,13 @@ Automatic Updates: `%LOCALAPPDATA%\hanzo-studio-electron-updater` or `%LOCALAPPD
 
 The macOS application is distributed as a [DMG](https://www.electron.build/dmg) and will install files in:
 
-`~/Library/Application Support/Hanzo Studio`
+`~/Library/Application Support/HanzoStudio`
 
 The application will be dragged into `/Applications`
 
 **Linux**
 
-`~/.config/Hanzo Studio`
+`~/.config/HanzoStudio`
 
 ### Hanzo Studio
 
@@ -65,9 +65,9 @@ You will also be asked to select a location to store Hanzo Studio files like mod
 
 On Windows: `%APPDATA%\Hanzo Studio\config.json`
 
-On macOS: `~/Library/Application Support/Hanzo Studio/config.json`
+On macOS: `~/Library/Application Support/HanzoStudio/config.json`
 
-On Linux: `~/.config/Hanzo Studio/config.json`
+On Linux: `~/.config/HanzoStudio/config.json`
 
 #### Model Paths
 
@@ -75,9 +75,9 @@ This directory is also written as the `base_path` in `extra_models_config.yaml`.
 
 On Windows: `%APPDATA%\Hanzo Studio\extra_models_config.yaml`
 
-On macOS: `~/Library/Application Support/Hanzo Studio/extra_models_config.yaml`
+On macOS: `~/Library/Application Support/HanzoStudio/extra_models_config.yaml`
 
-On Linux: `~/.config/Hanzo Studio/extra_models_config.yaml`
+On Linux: `~/.config/HanzoStudio/extra_models_config.yaml`
 
 ### Logs
 

@@ -38,7 +38,7 @@ yarn run test:e2e
 App data directories:
 
 - `%APPDATA%\Hanzo Studio` (Windows)
-- `Application Support/Hanzo Studio` (Mac)
+- `Application Support/HanzoStudio` (Mac)
 
 ### Updating screenshots (snapshots)
 

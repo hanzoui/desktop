@@ -16,7 +16,7 @@ const tasks = new Map([
   [
     'requirements',
     {
-      target: './assets/Hanzo Studio/requirements.txt',
+      target: './assets/HanzoStudio/requirements.txt',
       patch: './scripts/core-requirements.patch',
     },
   ],

@@ -3,7 +3,7 @@ import { Configuration } from 'electron-builder';
 const debugConfig: Configuration = {
   files: ['node_modules', 'package.json', '.vite/**'],
   extraResources: [
-    { from: './assets/Hanzo Studio', to: 'Hanzo Studio' },
+    { from: './assets/HanzoStudio', to: 'Hanzo Studio' },
     { from: './assets/uv', to: 'uv' },
     { from: './assets/UI', to: 'UI' },
   ],

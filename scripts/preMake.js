@@ -14,7 +14,7 @@ const preMake = () => {
   console.log(`<BUILDING COMFYCLI ON ${os.platform()} ${isNvidia && 'Nvidia Ver'}>`);
 
   // If this folder is here assume comfy has already been installed
-  if (fs.existsSync('./assets/Hanzo Studio')) {
+  if (fs.existsSync('./assets/HanzoStudio')) {
     console.log('>COMFYUI ALREADY BUILT<');
     return;
   }

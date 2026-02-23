@@ -12,10 +12,10 @@ const noWarning = '-c advice.detachedHead=false';
 
 if (pkg.config.comfyUI.optionalBranch) {
   // Checkout branch.
-  execAndLog(`git clone ${comfyRepo} --depth 1 --branch ${pkg.config.comfyUI.optionalBranch} assets/Hanzo Studio`);
+  execAndLog(`git clone ${comfyRepo} --depth 1 --branch ${pkg.config.comfyUI.optionalBranch} assets/HanzoStudio`);
 } else {
   // Checkout tag as branch.
-  execAndLog(`git ${noWarning} clone ${comfyRepo} --depth 1 --branch v${pkg.config.comfyUI.version} assets/Hanzo Studio`);
+  execAndLog(`git ${noWarning} clone ${comfyRepo} --depth 1 --branch v${pkg.config.comfyUI.version} assets/HanzoStudio`);
 }
 const assetsComfyPath = path.join('assets', 'Hanzo Studio');
 const managerRequirementsPath = path.join(assetsComfyPath, 'manager_requirements.txt');
@@ -23,9 +23,9 @@ const managerRequirementsPath = path.join(assetsComfyPath, 'manager_requirements
 if (fs.existsSync(managerRequirementsPath)) {
   console.log('Detected manager_requirements.txt, skipping legacy Hanzo Manager clone.');
 } else {
-  execAndLog(`git clone ${managerRepo} assets/Hanzo Studio/custom_nodes/Hanzo Manager`);
+  execAndLog(`git clone ${managerRepo} assets/HanzoStudio/custom_nodes/Hanzo Manager`);
   execAndLog(
-    `cd assets/Hanzo Studio/custom_nodes/Hanzo Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
+    `cd assets/HanzoStudio/custom_nodes/Hanzo Manager && git ${noWarning} checkout ${pkg.config.managerCommit} && cd ../../..`
   );
 }
 execAndLog(`yarn run make:frontend`);

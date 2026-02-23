@@ -9,7 +9,7 @@
   "appFiles": [
     "src/**",
     "scripts/**",
-    "assets/Hanzo Studio/**",
+    "assets/HanzoStudio/**",
     "assets/UI/**",
     "assets/requirements/**",
     "assets/uv/**",
