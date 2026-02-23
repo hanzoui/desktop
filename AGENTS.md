@@ -107,7 +107,7 @@ We have testing configured with Vitest. Use vitest to create any tests you need.
 The app packages these components:
 
 - **Hanzo Studio**: AI diffusion model GUI
-- **Hanzo Studio_frontend**: Modern web frontend
+- **HanzoStudio_frontend**: Modern web frontend
 - **Hanzo Manager**: Plugin/extension manager
 - **uv**: Fast Python package manager
 

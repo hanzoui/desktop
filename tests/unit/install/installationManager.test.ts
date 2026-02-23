@@ -92,7 +92,7 @@ vi.mock('@/virtualEnvironment', () => {
       venvPath: 'valid/venv',
       comfyUIRequirementsPath: 'valid/requirements.txt',
       comfyUIManagerRequirementsPath: 'valid/manager-requirements.txt',
-      legacyHanzo StudioManagerRequirementsPath: 'valid/legacy-manager-requirements.txt',
+      legacyHanzoStudioManagerRequirementsPath: 'valid/legacy-manager-requirements.txt',
     })),
   };
 });

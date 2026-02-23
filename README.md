@@ -17,7 +17,7 @@ macOS ARM: [Download](https://download.hanzo.ai/mac/dmg/arm64)
 This desktop app is a packaged way to use [Hanzo Studio](https://github.com/hanzoai/studio) and comes bundled with a few things:
 
 - Stable version of Hanzo Studio from [releases](https://github.com/hanzoai/studio/releases)
-- [Hanzo Studio_frontend](https://github.com/hanzoui/studio_frontend)
+- [HanzoStudio_frontend](https://github.com/hanzoui/studio_frontend)
 - [Hanzo Manager](https://github.com/ltdrdata/Hanzo Manager) (installed via pip when `--enable-manager` is set; legacy custom node is only cloned for older Hanzo Studio versions)
 - [uv](https://github.com/astral-sh/uv)
 
