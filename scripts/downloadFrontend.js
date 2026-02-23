@@ -35,8 +35,8 @@ if (frontend.optionalBranch) {
       DISTRIBUTION: 'desktop',
       NODE_OPTIONS: '--max-old-space-size=8192',
     });
-    await fs.mkdir('assets/Hanzo Studio/web_custom_versions/desktop_app', { recursive: true });
-    await fs.cp(path.join(frontendDir, 'dist'), 'assets/Hanzo Studio/web_custom_versions/desktop_app', { recursive: true });
+    await fs.mkdir('assets/HanzoStudio/web_custom_versions/desktop_app', { recursive: true });
+    await fs.cp(path.join(frontendDir, 'dist'), 'assets/HanzoStudio/web_custom_versions/desktop_app', { recursive: true });
     await fs.rm(frontendDir, { recursive: true });
   } catch (error) {
     console.error('Error building frontend:', error instanceof Error ? error.message : String(error));
@@ -92,7 +92,7 @@ if (frontend.optionalBranch) {
   const url = `https://github.com/hanzoui/studio_frontend/releases/download/v${version}/dist.zip`;
 
   const downloadPath = 'temp_frontend.zip';
-  const extractPath = 'assets/Hanzo Studio/web_custom_versions/desktop_app';
+  const extractPath = 'assets/HanzoStudio/web_custom_versions/desktop_app';
 
   async function downloadAndExtractFrontend() {
     try {

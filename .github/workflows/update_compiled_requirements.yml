@@ -20,9 +20,9 @@ concurrency:
 
 env:
   # Define uv pip compile commands as environment variables for consistency
-  UV_CMD_WINDOWS_CPU: 'uv pip compile assets/Hanzo Studio/requirements.txt assets/Hanzo Studio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/windows_cpu.compiled --index-url https://pypi.org/simple'
-  UV_CMD_WINDOWS_NVIDIA: 'uv pip compile assets/Hanzo Studio/requirements.txt assets/Hanzo Studio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match --override assets/override.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu129 -o assets/requirements/windows_nvidia.compiled'
-  UV_CMD_MACOS: 'uv pip compile assets/Hanzo Studio/requirements.txt assets/Hanzo Studio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/macos.compiled --override assets/override.txt --index-url https://pypi.org/simple'
+  UV_CMD_WINDOWS_CPU: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/windows_cpu.compiled --index-url https://pypi.org/simple'
+  UV_CMD_WINDOWS_NVIDIA: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match --override assets/override.txt --index-url https://pypi.org/simple --extra-index-url https://download.pytorch.org/whl/cu129 -o assets/requirements/windows_nvidia.compiled'
+  UV_CMD_MACOS: 'uv pip compile assets/HanzoStudio/requirements.txt assets/HanzoStudio/custom_nodes/Hanzo Manager/requirements.txt --emit-index-annotation --emit-index-url --index-strategy unsafe-best-match -o assets/requirements/macos.compiled --override assets/override.txt --index-url https://pypi.org/simple'
   # PR comment messages
   PR_MSG_SUCCESS: '✅ Compiled requirements have been updated successfully!'
   PR_MSG_NO_CHANGES: 'ℹ️ No changes needed - compiled requirements are already up to date.'
@@ -111,14 +111,14 @@ jobs:
         with:
           repository: hanzoui/studio
           ref: v${{ steps.versions.outputs.hanzo_studio_version }}
-          path: assets/Hanzo Studio
+          path: assets/HanzoStudio
 
       - name: Checkout Hanzo Manager
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           repository: ltdrdata/Hanzo Manager
           ref: ${{ steps.versions.outputs.manager_commit }}
-          path: assets/Hanzo Studio/custom_nodes/Hanzo Manager
+          path: assets/HanzoStudio/custom_nodes/Hanzo Manager
 
       - name: Setup Python
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
@@ -135,7 +135,7 @@ jobs:
       - name: Apply core requirements patch
         shell: bash
         run: |
-          cd assets/Hanzo Studio
+          cd assets/HanzoStudio
           patch -p1 < ../../scripts/core-requirements.patch
           echo "Applied core requirements patch"
 
@@ -187,14 +187,14 @@ jobs:
         with:
           repository: hanzoui/studio
           ref: v${{ steps.versions.outputs.hanzo_studio_version }}
-          path: assets/Hanzo Studio
+          path: assets/HanzoStudio
 
       - name: Checkout Hanzo Manager
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
           repository: ltdrdata/Hanzo Manager
           ref: ${{ steps.versions.outputs.manager_commit }}
-          path: assets/Hanzo Studio/custom_nodes/Hanzo Manager
+          path: assets/HanzoStudio/custom_nodes/Hanzo Manager
 
       - name: Setup Python
         uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
@@ -211,7 +211,7 @@ jobs:
 
       - name: Apply core requirements patch
         run: |
-          cd assets/Hanzo Studio
+          cd assets/HanzoStudio
           patch -p1 < ../../scripts/core-requirements.patch
           echo "Applied core requirements patch"
 

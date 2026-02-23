@@ -25,7 +25,7 @@ export class TestInstallWizard {
     this.cpuToggle = this.window.getByRole('button', { name: 'CPU' });
     // The install path input is the visible textbox on Step 2
     // Prefer placeholder to avoid ambiguity with hidden inputs
-    this.installLocationInput = this.window.getByPlaceholder(/Hanzo Studio/).first();
+    this.installLocationInput = this.window.getByPlaceholder(/HanzoStudio/).first();
 
     this.selectGpuTitle = this.window.getByText('Choose your hardware setup');
     this.installLocationTitle = this.window.getByText('Choose where to install Hanzo Studio');

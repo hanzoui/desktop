@@ -120,8 +120,8 @@ The app packages these components:
 ## Platform-Specific Paths
 
 - **Windows**: `%APPDATA%\Hanzo Studio` (config), `%LOCALAPPDATA%\Programs\Hanzo Studio` (app)
-- **macOS**: `~/Library/Application Support/Hanzo Studio`
-- **Linux**: `~/.config/Hanzo Studio`
+- **macOS**: `~/Library/Application Support/HanzoStudio`
+- **Linux**: `~/.config/HanzoStudio`
 
 ## Code Style & Conventions
 

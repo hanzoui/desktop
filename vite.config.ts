@@ -23,7 +23,7 @@ export default defineConfig((env) => {
     },
     server: {
       watch: {
-        ignored: ['**/assets/Hanzo Studio/**', 'venv/**'],
+        ignored: ['**/assets/HanzoStudio/**', 'venv/**'],
       },
     },
     plugins: [

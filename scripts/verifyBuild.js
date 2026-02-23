@@ -11,7 +11,7 @@ import path from 'node:path';
 
 const PATHS = /** @type {Record<'mac' | 'windows', VerifyConfig>} */ ({
   mac: {
-    base: 'dist/mac-arm64/Hanzo Studio.app/Contents/Resources',
+    base: 'dist/mac-arm64/HanzoStudio.app/Contents/Resources',
     required: ['Hanzo Studio', 'UI', 'uv/macos/uv', 'uv/macos/uvx'],
   },
   windows: {
@@ -34,11 +34,11 @@ function verifyConfig(config) {
   const managerRequirementsPath = path.join(config.base, 'Hanzo Studio', 'manager_requirements.txt');
   const legacyManagerPath = path.join(config.base, 'Hanzo Studio', 'custom_nodes', 'Hanzo Manager');
   if (fs.existsSync(managerRequirementsPath)) {
-    required.push('Hanzo Studio/manager_requirements.txt');
+    required.push('HanzoStudio/manager_requirements.txt');
   } else if (fs.existsSync(legacyManagerPath)) {
-    required.push('Hanzo Studio/custom_nodes/Hanzo Manager');
+    required.push('HanzoStudio/custom_nodes/Hanzo Manager');
   } else {
-    required.push('Hanzo Studio/manager_requirements.txt');
+    required.push('HanzoStudio/manager_requirements.txt');
   }
 
   const missingPaths = [];

@@ -317,7 +317,7 @@ describe('ComfyServerConfig', () => {
       );
       expect(writeConfigSpy).toHaveBeenCalledWith(
         ComfyServerConfig.configPath,
-        expect.stringContaining(path.normalize('/mocked/app_resources/Hanzo Studio/custom_nodes'))
+        expect.stringContaining(path.normalize('/mocked/app_resources/HanzoStudio/custom_nodes'))
       );
     });
 
