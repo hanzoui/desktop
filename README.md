@@ -18,7 +18,7 @@ This desktop app is a packaged way to use [Hanzo Studio](https://github.com/hanz
 
 - Stable version of Hanzo Studio from [releases](https://github.com/hanzoai/studio/releases)
 - [HanzoStudio_frontend](https://github.com/hanzoui/studio_frontend)
-- [Hanzo Manager](https://github.com/ltdrdata/Hanzo Manager) (installed via pip when `--enable-manager` is set; legacy custom node is only cloned for older Hanzo Studio versions)
+- [Hanzo Manager](https://github.com/ltdrdata/ComfyUI-Manager) (installed via pip when `--enable-manager` is set; legacy custom node is only cloned for older Hanzo Studio versions)
 - [uv](https://github.com/astral-sh/uv)
 
 On startup, it will install all the necessary python dependencies with uv and start the Hanzo Studio server. The app will automatically update with stable releases of Hanzo Studio, Hanzo Manager (pip), and the uv executable as well as some desktop-specific features.
