@@ -1,3 +1,4 @@
+# Secrets: Hanzo KMS (kms.hanzo.ai) — auth via Hanzo IAM
 name: Publish - All Platforms
 
 on:
@@ -21,15 +22,22 @@ jobs:
       github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
+      - name: Fetch secrets from Hanzo KMS
+        id: kms
+        uses: hanzoui/.github/actions/kms-secrets@main
+        with:
+          kms_client_id: ${{ secrets.KMS_CLIENT_ID }}
+          kms_client_secret: ${{ secrets.KMS_CLIENT_SECRET }}
+          secrets: 'SENTRY_ORG_TOKEN,TODESKTOP_ACCESS_TOKEN,TODESKTOP_EMAIL'
       - name: Github checkout
         uses: actions/checkout@v4
 
       - name: Build
         uses: ./.github/actions/build/todesktop
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_ORG_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ steps.kms.outputs.SENTRY_ORG_TOKEN }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TODESKTOP_ACCESS_TOKEN: ${{ secrets.TODESKTOP_ACCESS_TOKEN }}
-          TODESKTOP_EMAIL: ${{ secrets.TODESKTOP_EMAIL }}
+          TODESKTOP_ACCESS_TOKEN: ${{ steps.kms.outputs.TODESKTOP_ACCESS_TOKEN }}
+          TODESKTOP_EMAIL: ${{ steps.kms.outputs.TODESKTOP_EMAIL }}
           RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.event.release.tag_name }}

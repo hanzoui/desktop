@@ -1,3 +1,4 @@
+# Secrets: Hanzo KMS (kms.hanzo.ai) — auth via Hanzo IAM
 name: Publish ElectronAPI to npm
 
 on:
@@ -21,6 +22,13 @@ jobs:
       (github.event.pull_request.merged == true &&
       contains(github.event.pull_request.labels.*.name, 'ReleaseTypes'))
     steps:
+      - name: Fetch secrets from Hanzo KMS
+        id: kms
+        uses: hanzoui/.github/actions/kms-secrets@main
+        with:
+          kms_client_id: ${{ secrets.KMS_CLIENT_ID }}
+          kms_client_secret: ${{ secrets.KMS_CLIENT_SECRET }}
+          secrets: 'NPM_TOKEN'
       - uses: actions/checkout@v4
 
       - name: Use Node.js 20.x
@@ -56,4 +64,4 @@ jobs:
         run: npm publish --access public
         working-directory: ./dist
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ steps.kms.outputs.NPM_TOKEN }}

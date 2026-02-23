@@ -1,3 +1,4 @@
+# Secrets: Hanzo KMS (kms.hanzo.ai) — auth via Hanzo IAM
 name: Build - Mac
 
 on:
@@ -8,6 +9,13 @@ jobs:
   build-macos-debug:
     runs-on: macos-latest
     steps:
+      - name: Fetch secrets from Hanzo KMS
+        id: kms
+        uses: hanzoui/.github/actions/kms-secrets@main
+        with:
+          kms_client_id: ${{ secrets.KMS_CLIENT_ID }}
+          kms_client_secret: ${{ secrets.KMS_CLIENT_SECRET }}
+          secrets: 'PERSONAL_ACCESS_TOKEN_FOR_GITHUB'
       - name: Github checkout
         uses: actions/checkout@v4
 
@@ -27,7 +35,7 @@ jobs:
       - name: Build Comfy
         uses: ./.github/actions/build/macos/comfy
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_FOR_GITHUB }}
+          GITHUB_TOKEN: ${{ steps.kms.outputs.PERSONAL_ACCESS_TOKEN_FOR_GITHUB }}
 
       - name: Make app
         env:
