@@ -1,3 +1,4 @@
+# Secrets: Hanzo KMS (kms.hanzo.ai) — auth via Hanzo IAM
 name: Build App And Send ToDesktop
 
 on:
@@ -12,6 +13,13 @@ jobs:
   build-windows-debug:
     runs-on: windows-latest
     steps:
+      - name: Fetch secrets from Hanzo KMS
+        id: kms
+        uses: hanzoui/.github/actions/kms-secrets@main
+        with:
+          kms_client_id: ${{ secrets.KMS_CLIENT_ID }}
+          kms_client_secret: ${{ secrets.KMS_CLIENT_SECRET }}
+          secrets: 'TODESKTOP_ACCESS_TOKEN,TODESKTOP_EMAIL'
       - name: Github checkout
         uses: actions/checkout@v4
 
@@ -24,5 +32,5 @@ jobs:
         uses: ./.github/actions/build/todesktop
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TODESKTOP_ACCESS_TOKEN: ${{ secrets.TODESKTOP_ACCESS_TOKEN }}
-          TODESKTOP_EMAIL: ${{ secrets.TODESKTOP_EMAIL }}
+          TODESKTOP_ACCESS_TOKEN: ${{ steps.kms.outputs.TODESKTOP_ACCESS_TOKEN }}
+          TODESKTOP_EMAIL: ${{ steps.kms.outputs.TODESKTOP_EMAIL }}
