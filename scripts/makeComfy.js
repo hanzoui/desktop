@@ -5,7 +5,7 @@ import path from 'node:path';
 import pkg from './getPackage.js';
 
 const comfyRepo = 'https://github.com/hanzoai/studio';
-const managerRepo = 'https://github.com/ltdrdata/Hanzo Manager';
+const managerRepo = 'https://github.com/ltdrdata/ComfyUI-Manager';
 
 /** Suppress warning about detached head */
 const noWarning = '-c advice.detachedHead=false';
