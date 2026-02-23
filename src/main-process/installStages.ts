@@ -1,5 +1,5 @@
 /**
- * Installation stage tracking for ComfyUI Desktop
+ * Installation stage tracking for Hanzo Desktop
  * Provides detailed tracking of the installation process stages
  */
 import { InstallStage } from '../constants';

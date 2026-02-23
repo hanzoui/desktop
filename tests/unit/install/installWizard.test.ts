@@ -90,7 +90,7 @@ describe('InstallWizard', () => {
   });
 
   describe('install', () => {
-    it('should create ComfyUI directories and initialize required files', async () => {
+    it('should create Hanzo Studio directories and initialize required files', async () => {
       const baseConfig: ModelPaths = { test: 'config' };
       vi.spyOn(ComfyServerConfig, 'getBaseConfig').mockReturnValue(baseConfig);
       await installWizard.install();
@@ -215,7 +215,7 @@ describe('InstallWizard', () => {
       await installWizard.initializeModelPaths();
 
       expect(ComfyServerConfig.createConfigFile).toHaveBeenCalledWith(ComfyServerConfig.configPath, {
-        comfyui_desktop: {
+        hanzo_studio_desktop: {
           ...baseConfig,
           base_path: '/test/path',
         },
@@ -244,11 +244,11 @@ describe('InstallWizard', () => {
 
       expect(ComfyServerConfig.createConfigFile).toHaveBeenCalledWith(ComfyServerConfig.configPath, {
         ...migrationConfigs,
-        comfyui_migration: {
+        hanzo_studio_migration: {
           ...migrationModelPaths,
           base_path: '/source/path',
         },
-        comfyui_desktop: {
+        hanzo_studio_desktop: {
           ...baseConfig,
           base_path: '/test/path',
         },

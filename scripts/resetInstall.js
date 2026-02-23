@@ -13,9 +13,9 @@ import * as yaml from 'yaml';
 function getConfigPath(filename) {
   switch (process.platform) {
     case 'darwin': // macOS
-      return path.join(os.homedir(), 'Library', 'Application Support', 'ComfyUI', filename);
+      return path.join(os.homedir(), 'Library', 'Application Support', 'Hanzo Studio', filename);
     case 'win32': // Windows
-      return path.join(process.env.APPDATA, 'ComfyUI', filename);
+      return path.join(process.env.APPDATA, 'Hanzo Studio', filename);
     default:
       console.log('Platform not supported for this operation');
       process.exit(1);
@@ -77,27 +77,27 @@ async function main() {
 
     // If config.json basePath exists, ask user if they want to delete it
     if (desktopBasePath && fs.existsSync(desktopBasePath)) {
-      console.log(`Found ComfyUI installation directory at: ${desktopBasePath}`);
+      console.log(`Found Hanzo Studio installation directory at: ${desktopBasePath}`);
       const shouldDelete = await askForConfirmation('Would you like to delete this directory as well?');
 
       if (shouldDelete) {
         fs.rmSync(desktopBasePath, { recursive: true, force: true });
-        console.log(`Successfully removed ComfyUI directory at ${desktopBasePath}`);
+        console.log(`Successfully removed Hanzo Studio directory at ${desktopBasePath}`);
       } else {
-        console.log('Skipping ComfyUI directory deletion');
+        console.log('Skipping Hanzo Studio directory deletion');
       }
     }
 
     // If base_path exists and does not match basePath, ask user if they want to delete it
     if (basePath && basePath !== desktopBasePath && fs.existsSync(basePath)) {
-      console.log(`Found ComfyUI models directory at: ${basePath}`);
+      console.log(`Found Hanzo Studio models directory at: ${basePath}`);
       const shouldDelete = await askForConfirmation('Would you like to delete this directory as well?');
 
       if (shouldDelete) {
         fs.rmSync(basePath, { recursive: true, force: true });
-        console.log(`Successfully removed ComfyUI directory at ${basePath}`);
+        console.log(`Successfully removed Hanzo Studio directory at ${basePath}`);
       } else {
-        console.log('Skipping ComfyUI directory deletion');
+        console.log('Skipping Hanzo Studio directory deletion');
       }
     }
   } catch (error) {

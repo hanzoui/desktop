@@ -25,10 +25,10 @@ export class TestInstallWizard {
     this.cpuToggle = this.window.getByRole('button', { name: 'CPU' });
     // The install path input is the visible textbox on Step 2
     // Prefer placeholder to avoid ambiguity with hidden inputs
-    this.installLocationInput = this.window.getByPlaceholder(/ComfyUI/).first();
+    this.installLocationInput = this.window.getByPlaceholder(/Hanzo Studio/).first();
 
     this.selectGpuTitle = this.window.getByText('Choose your hardware setup');
-    this.installLocationTitle = this.window.getByText('Choose where to install ComfyUI');
+    this.installLocationTitle = this.window.getByText('Choose where to install Hanzo Studio');
     // Migration is now an accordion section on the install location step
     this.migrateTitle = this.window.getByText('Migrate from existing installation');
     this.desktopSettingsTitle = this.window.getByText('Desktop App Settings');

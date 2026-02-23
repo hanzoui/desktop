@@ -95,8 +95,8 @@ dist
 # Electron-Forge
 out/
 
-# ComfyUI
-comfyui-prebuilt
+# Hanzo Studio
+hanzo-studio-prebuilt
 comfyui
 
 # vscode
@@ -107,7 +107,7 @@ comfyui
 !.vscode/tasks.json
 
 # built assets
-assets/ComfyUI
+assets/Hanzo Studio
 assets/cpython*.tar.gz
 assets/python
 assets/requirements.*

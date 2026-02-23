@@ -1,7 +1,7 @@
 import { rename } from 'node:fs/promises';
 
 import { assertPlaywrightEnabled } from './tests/integration/testExtensions';
-import { FilePermission, addRandomSuffix, getComfyUIAppDataPath, pathExists } from './tests/shared/utils';
+import { FilePermission, addRandomSuffix, getHanzo StudioAppDataPath, pathExists } from './tests/shared/utils';
 
 /** Backs up app data - in case this was run on a non-ephemeral machine.  Does nothing in CI. */
 async function globalSetup() {
@@ -10,7 +10,7 @@ async function globalSetup() {
 
   if (process.env.COMFYUI_E2E_INDIVIDUAL_TEST_MODE === '1') return;
 
-  const appDataPath = getComfyUIAppDataPath();
+  const appDataPath = getHanzo StudioAppDataPath();
   await backupByRenaming(appDataPath);
 }
 

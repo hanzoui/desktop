@@ -58,7 +58,7 @@ body:
   - type: textarea
     attributes:
       label: Steps to Reproduce
-      description: "Describe how to reproduce the issue. Please be sure to attach a workflow JSON or PNG, ideally one that doesn't require custom nodes to test. If the bug open happens when certain custom nodes are used, most likely that custom node is what has the bug rather than ComfyUI, in which case it should be reported to the node's author."
+      description: "Describe how to reproduce the issue. Please be sure to attach a workflow JSON or PNG, ideally one that doesn't require custom nodes to test. If the bug open happens when certain custom nodes are used, most likely that custom node is what has the bug rather than Hanzo Studio, in which case it should be reported to the node's author."
     validations:
       required: true
   - type: textarea
@@ -69,8 +69,8 @@ body:
 
         Log file locations:
 
-        - **Windows: `%APPDATA%\ComfyUI\logs`**
-        - **macOS**: `~/Library/Logs/ComfyUI`
+        - **Windows: `%APPDATA%\Hanzo Studio\logs`**
+        - **macOS**: `~/Library/Logs/Hanzo Studio`
 
         <details>
 

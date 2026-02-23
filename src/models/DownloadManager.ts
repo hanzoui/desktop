@@ -35,7 +35,7 @@ interface DownloadReport {
 }
 
 /**
- * Singleton class that manages downloading model checkpoints for ComfyUI.
+ * Singleton class that manages downloading model checkpoints for Hanzo Studio.
  */
 export class DownloadManager {
   private static instance: DownloadManager;

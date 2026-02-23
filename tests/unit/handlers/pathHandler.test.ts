@@ -22,8 +22,8 @@ const MOCK_PATHS = {
   logs: '/mock/logs/path',
   documents: '/mock/documents',
   appData: '/mock/appData',
-  appPath: path.join('/mock', 'ComfyUI Desktop.app', 'Contents', 'Resources', 'app.asar'),
-  exe: path.join('/mock', 'ComfyUI Desktop.app', 'Contents', 'MacOS', 'ComfyUI Desktop'),
+  appPath: path.join('/mock', 'Hanzo Desktop.app', 'Contents', 'Resources', 'app.asar'),
+  exe: path.join('/mock', 'Hanzo Desktop.app', 'Contents', 'MacOS', 'Hanzo Desktop'),
 } as const;
 const MOCK_RESOURCES_PATH = path.dirname(MOCK_PATHS.appPath);
 
@@ -70,7 +70,7 @@ vi.mock('@/config/comfyServerConfig', () => ({
 
 vi.mock('@/config/comfyConfigManager', () => ({
   ComfyConfigManager: {
-    isComfyUIDirectory: vi.fn(),
+    isHanzo StudioDirectory: vi.fn(),
   },
 }));
 
@@ -363,7 +363,7 @@ describe('PathHandlers', () => {
         return;
       }
 
-      const result = await validateHandler({}, String.raw`C:\Users\Test\OneDrive\ComfyUI`);
+      const result = await validateHandler({}, String.raw`C:\Users\Test\OneDrive\Hanzo Studio`);
 
       expect(result).toMatchObject({
         isValid: false,
@@ -377,7 +377,7 @@ describe('PathHandlers', () => {
         return;
       }
       mockFileSystem({ exists: true, writable: true });
-      const result = await validateHandler({}, String.raw`D:\ComfyUI`);
+      const result = await validateHandler({}, String.raw`D:\Hanzo Studio`);
 
       expect(result).toMatchObject({
         isValid: true,
@@ -409,7 +409,7 @@ describe('PathHandlers', () => {
         return;
       }
       mockFileSystem({ exists: true, writable: true });
-      const installDir = path.win32.join(MOCK_LOCAL_APP_DATA, 'Programs', 'comfyui-electron', 'data');
+      const installDir = path.win32.join(MOCK_LOCAL_APP_DATA, 'Programs', 'hanzo-studio-electron', 'data');
 
       const result = await validateHandler({}, installDir);
       expect(result).toMatchObject({
@@ -424,7 +424,7 @@ describe('PathHandlers', () => {
         return;
       }
       mockFileSystem({ exists: true, writable: true });
-      const installDir = path.win32.join(MOCK_LOCAL_APP_DATA, 'Programs', 'comfyui-electron', 'data').toUpperCase();
+      const installDir = path.win32.join(MOCK_LOCAL_APP_DATA, 'Programs', 'hanzo-studio-electron', 'data').toUpperCase();
 
       const result = await validateHandler({}, installDir);
       expect(result).toMatchObject({
@@ -439,7 +439,7 @@ describe('PathHandlers', () => {
         return;
       }
       mockFileSystem({ exists: true, writable: true });
-      const updaterPath = path.win32.join(MOCK_LOCAL_APP_DATA, '@comfyorgcomfyui-electron-updater', 'payload');
+      const updaterPath = path.win32.join(MOCK_LOCAL_APP_DATA, '@comfyorghanzo-studio-electron-updater', 'payload');
 
       const result = await validateHandler({}, updaterPath);
       expect(result).toMatchObject({
@@ -453,7 +453,7 @@ describe('PathHandlers', () => {
         return;
       }
       mockFileSystem({ exists: true, writable: true });
-      const updaterPath = path.win32.join(MOCK_LOCAL_APP_DATA, 'comfyui-electron-updater', 'payload');
+      const updaterPath = path.win32.join(MOCK_LOCAL_APP_DATA, 'hanzo-studio-electron-updater', 'payload');
 
       const result = await validateHandler({}, updaterPath);
       expect(result).toMatchObject({
@@ -546,7 +546,7 @@ describe('PathHandlers', () => {
       expect(result).toEqual({
         appData: '/mock/appData',
         appPath: MOCK_PATHS.appPath,
-        defaultInstallPath: path.join('/mock/documents', 'ComfyUI'),
+        defaultInstallPath: path.join('/mock/documents', 'Hanzo Studio'),
       });
     });
 
@@ -557,28 +557,28 @@ describe('PathHandlers', () => {
       mockPaths({ documents: String.raw`C:\Users\Test\OneDrive\Documents` });
 
       const result = await getSystemPathsHandler({});
-      const expected = String.raw`C:\Users\Test\Documents\ComfyUI`;
+      const expected = String.raw`C:\Users\Test\Documents\Hanzo Studio`;
       expect(result.defaultInstallPath).toBe(expected);
     });
   });
 
-  describe('validate-comfyui-source', () => {
-    let validateComfyUIHandler: HandlerType<(event: unknown, path: string) => { isValid: boolean; error?: string }>;
+  describe('validate-hanzo-studio-source', () => {
+    let validateHanzo StudioHandler: HandlerType<(event: unknown, path: string) => { isValid: boolean; error?: string }>;
 
     beforeEach(() => {
-      validateComfyUIHandler = getRegisteredHandler(IPC_CHANNELS.VALIDATE_COMFYUI_SOURCE);
+      validateHanzo StudioHandler = getRegisteredHandler(IPC_CHANNELS.VALIDATE_COMFYUI_SOURCE);
     });
 
-    it('should return valid result for valid ComfyUI path', () => {
-      vi.mocked(ComfyConfigManager.isComfyUIDirectory).mockReturnValue(true);
-      const result = validateComfyUIHandler({}, '/valid/comfy/path');
+    it('should return valid result for valid Hanzo Studio path', () => {
+      vi.mocked(ComfyConfigManager.isHanzo StudioDirectory).mockReturnValue(true);
+      const result = validateHanzo StudioHandler({}, '/valid/comfy/path');
       expect(result).toEqual({ isValid: true });
     });
 
-    it('should return invalid result with error for invalid ComfyUI path', () => {
-      vi.mocked(ComfyConfigManager.isComfyUIDirectory).mockReturnValue(false);
-      const result = validateComfyUIHandler({}, '/invalid/comfy/path');
-      expect(result).toEqual({ isValid: false, error: 'Invalid ComfyUI source path' });
+    it('should return invalid result with error for invalid Hanzo Studio path', () => {
+      vi.mocked(ComfyConfigManager.isHanzo StudioDirectory).mockReturnValue(false);
+      const result = validateHanzo StudioHandler({}, '/invalid/comfy/path');
+      expect(result).toEqual({ isValid: false, error: 'Invalid Hanzo Studio source path' });
     });
   });
 

@@ -39,7 +39,7 @@ export function registerAppHandlers() {
         type: 'question',
         buttons: ['Yes', 'No'],
         defaultId: 0,
-        title: 'Restart ComfyUI',
+        title: 'Restart Hanzo Studio',
         message: customMessage,
         detail: 'The application will close and restart automatically.',
       });

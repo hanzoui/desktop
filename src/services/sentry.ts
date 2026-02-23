@@ -55,7 +55,7 @@ export function captureSentryException(error: unknown, eventName: string) {
     },
     extra: {
       logs: getLogTail(NUM_LOG_LINES_CAPTURED, LogFile.Main),
-      comfyLogs: getLogTail(NUM_LOG_LINES_CAPTURED, LogFile.ComfyUI),
+      comfyLogs: getLogTail(NUM_LOG_LINES_CAPTURED, LogFile.Hanzo Studio),
     },
   });
   return createSentryUrl(eventId);

@@ -92,7 +92,7 @@ vi.mock('@/virtualEnvironment', () => {
       venvPath: 'valid/venv',
       comfyUIRequirementsPath: 'valid/requirements.txt',
       comfyUIManagerRequirementsPath: 'valid/manager-requirements.txt',
-      legacyComfyUIManagerRequirementsPath: 'valid/legacy-manager-requirements.txt',
+      legacyHanzo StudioManagerRequirementsPath: 'valid/legacy-manager-requirements.txt',
     })),
   };
 });
@@ -198,7 +198,7 @@ describe('InstallationManager', () => {
           });
           const originalGetPath = vi.mocked(app.getPath).getMockImplementation();
           vi.mocked(app.getPath).mockImplementation((name) => {
-            if (name === 'exe') return 'valid/app/ComfyUI.exe';
+            if (name === 'exe') return 'valid/app/Hanzo Studio.exe';
             return originalGetPath ? originalGetPath(name) : '/mock/app/path';
           });
           return () => {
@@ -296,7 +296,7 @@ describe('parseNvidiaDriverVersionFromSmiOutput', () => {
 |    0   N/A  N/A           26908    C+G   ...l\slack\app-4.47.69\slack.exe      N/A      |
 |    0   N/A  N/A           32944    C+G   ....0.3650.96\msedgewebview2.exe      N/A      |
 |    0   N/A  N/A           35384    C+G   ...kyb3d8bbwe\EdgeGameAssist.exe      N/A      |
-|    0   N/A  N/A           38088    C+G   ...\Programs\ComfyUI\ComfyUI.exe      N/A      |
+|    0   N/A  N/A           38088    C+G   ...\Programs\Hanzo Studio\Hanzo Studio.exe      N/A      |
 |    0   N/A  N/A           38248    C+G   ...cord\app-1.0.9219\Discord.exe      N/A      |
 |    0   N/A  N/A           42816    C+G   ...a\Roaming\Spotify\Spotify.exe      N/A      |
 |    0   N/A  N/A           45164    C+G   ...t\Edge\Application\msedge.exe      N/A      |

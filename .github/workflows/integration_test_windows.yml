@@ -24,7 +24,7 @@ jobs:
       - name: Upload Build
         uses: actions/upload-artifact@v4
         with:
-          name: comfyui-electron-win32-debug-build-${{ env.sha_short }}
+          name: hanzo-studio-electron-win32-debug-build-${{ env.sha_short }}
           path: dist/*.zip
 
       - name: Set display resolution

@@ -12,8 +12,8 @@ try {
   const branchName = `version-bump-${isoDate}-${timestamp}`;
   execSync(`git checkout -b ${branchName} -t origin/main`, { stdio: 'inherit' });
 
-  // Get latest frontend release: https://github.com/Comfy-Org/ComfyUI_frontend/releases
-  const latestRelease = 'https://api.github.com/repos/Comfy-Org/ComfyUI_frontend/releases/latest';
+  // Get latest frontend release: https://github.com/hanzoui/studio_frontend/releases
+  const latestRelease = 'https://api.github.com/repos/hanzoui/studio_frontend/releases/latest';
   const latestReleaseData = await fetch(latestRelease);
   /** @type {unknown} */
   const json = await latestReleaseData.json();
@@ -30,7 +30,7 @@ try {
 
   // Messaging
   const message = `[chore] Update frontend to ${version}`;
-  const prBody = `Automated frontend update to ${version}: https://github.com/Comfy-Org/ComfyUI_frontend/releases/tag/v${version}`;
+  const prBody = `Automated frontend update to ${version}: https://github.com/hanzoui/studio_frontend/releases/tag/v${version}`;
 
   // Commit the version bump
   execSync(`git commit -am "${message}" --no-verify`, { stdio: 'inherit' });

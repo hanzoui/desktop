@@ -2,7 +2,7 @@ import { expect, test } from '../testExtensions';
 
 test('App window has title', async ({ app }) => {
   const window = await app.firstWindow();
-  await expect(window).toHaveTitle('ComfyUI');
+  await expect(window).toHaveTitle('Hanzo Studio');
 });
 
 test('App quits when window is closed', async ({ app }) => {

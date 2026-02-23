@@ -23,18 +23,18 @@ export async function pathExists(path: string, permission: FilePermission = File
 }
 
 /**
- * Get the path to the ComfyUI app data directory. Precisely matches Electron's app.getPath('userData').
- * @returns The path to the ComfyUI app data directory.
+ * Get the path to the Hanzo Studio app data directory. Precisely matches Electron's app.getPath('userData').
+ * @returns The path to the Hanzo Studio app data directory.
  */
-export function getComfyUIAppDataPath() {
+export function getHanzo StudioAppDataPath() {
   switch (process.platform) {
     case 'win32':
       if (!process.env.APPDATA) throw new Error('APPDATA environment variable is not set.');
-      return path.join(process.env.APPDATA, 'ComfyUI');
+      return path.join(process.env.APPDATA, 'Hanzo Studio');
     case 'darwin':
-      return path.join(homedir(), 'Library', 'Application Support', 'ComfyUI');
+      return path.join(homedir(), 'Library', 'Application Support', 'Hanzo Studio');
     default:
-      return path.join(homedir(), '.config', 'ComfyUI');
+      return path.join(homedir(), '.config', 'Hanzo Studio');
   }
 }
 
@@ -42,11 +42,11 @@ export function getDefaultInstallLocation() {
   switch (process.platform) {
     case 'win32':
       if (!process.env.USERPROFILE) throw new Error('USERPROFILE environment variable is not set.');
-      return path.join(process.env.USERPROFILE, 'Documents', 'ComfyUI');
+      return path.join(process.env.USERPROFILE, 'Documents', 'Hanzo Studio');
     case 'darwin':
-      return path.join(homedir(), 'Documents', 'ComfyUI');
+      return path.join(homedir(), 'Documents', 'Hanzo Studio');
     default:
-      return process.env.XDG_DOCUMENTS_DIR || path.join(homedir(), 'Documents', 'ComfyUI');
+      return process.env.XDG_DOCUMENTS_DIR || path.join(homedir(), 'Documents', 'Hanzo Studio');
   }
 }
 

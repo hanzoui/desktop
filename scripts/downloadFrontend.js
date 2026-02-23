@@ -19,7 +19,7 @@ if (!version) {
   process.exit(1);
 }
 
-const frontendRepo = 'https://github.com/Comfy-Org/ComfyUI_frontend';
+const frontendRepo = 'https://github.com/hanzoui/studio_frontend';
 
 if (frontend.optionalBranch) {
   // Optional branch, no release; build from source
@@ -35,8 +35,8 @@ if (frontend.optionalBranch) {
       DISTRIBUTION: 'desktop',
       NODE_OPTIONS: '--max-old-space-size=8192',
     });
-    await fs.mkdir('assets/ComfyUI/web_custom_versions/desktop_app', { recursive: true });
-    await fs.cp(path.join(frontendDir, 'dist'), 'assets/ComfyUI/web_custom_versions/desktop_app', { recursive: true });
+    await fs.mkdir('assets/Hanzo Studio/web_custom_versions/desktop_app', { recursive: true });
+    await fs.cp(path.join(frontendDir, 'dist'), 'assets/Hanzo Studio/web_custom_versions/desktop_app', { recursive: true });
     await fs.rm(frontendDir, { recursive: true });
   } catch (error) {
     console.error('Error building frontend:', error instanceof Error ? error.message : String(error));
@@ -89,10 +89,10 @@ if (frontend.optionalBranch) {
   }
 } else {
   // Download normal frontend release zip
-  const url = `https://github.com/Comfy-Org/ComfyUI_frontend/releases/download/v${version}/dist.zip`;
+  const url = `https://github.com/hanzoui/studio_frontend/releases/download/v${version}/dist.zip`;
 
   const downloadPath = 'temp_frontend.zip';
-  const extractPath = 'assets/ComfyUI/web_custom_versions/desktop_app';
+  const extractPath = 'assets/Hanzo Studio/web_custom_versions/desktop_app';
 
   async function downloadAndExtractFrontend() {
     try {
@@ -130,7 +130,7 @@ if (frontend.optionalBranch) {
 
 // Copy desktop-ui package to assets
 console.log('Copying desktop-ui package...');
-const desktopUiSource = 'node_modules/@comfyorg/desktop-ui/dist';
+const desktopUiSource = 'node_modules/@hanzoui/desktop-ui/dist';
 const desktopUiTarget = 'assets/desktop-ui';
 
 try {

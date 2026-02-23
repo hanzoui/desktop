@@ -11,14 +11,14 @@ import path from 'node:path';
 
 const PATHS = /** @type {Record<'mac' | 'windows', VerifyConfig>} */ ({
   mac: {
-    base: 'dist/mac-arm64/ComfyUI.app/Contents/Resources',
-    required: ['ComfyUI', 'UI', 'uv/macos/uv', 'uv/macos/uvx'],
+    base: 'dist/mac-arm64/Hanzo Studio.app/Contents/Resources',
+    required: ['Hanzo Studio', 'UI', 'uv/macos/uv', 'uv/macos/uvx'],
   },
   windows: {
     base: 'dist/win-unpacked/resources',
     required: [
       // Add Windows-specific paths here
-      'ComfyUI',
+      'Hanzo Studio',
       'UI',
       'uv/win/uv.exe',
       'uv/win/uvx.exe',
@@ -31,14 +31,14 @@ const PATHS = /** @type {Record<'mac' | 'windows', VerifyConfig>} */ ({
  */
 function verifyConfig(config) {
   const required = [...config.required];
-  const managerRequirementsPath = path.join(config.base, 'ComfyUI', 'manager_requirements.txt');
-  const legacyManagerPath = path.join(config.base, 'ComfyUI', 'custom_nodes', 'ComfyUI-Manager');
+  const managerRequirementsPath = path.join(config.base, 'Hanzo Studio', 'manager_requirements.txt');
+  const legacyManagerPath = path.join(config.base, 'Hanzo Studio', 'custom_nodes', 'Hanzo Manager');
   if (fs.existsSync(managerRequirementsPath)) {
-    required.push('ComfyUI/manager_requirements.txt');
+    required.push('Hanzo Studio/manager_requirements.txt');
   } else if (fs.existsSync(legacyManagerPath)) {
-    required.push('ComfyUI/custom_nodes/ComfyUI-Manager');
+    required.push('Hanzo Studio/custom_nodes/Hanzo Manager');
   } else {
-    required.push('ComfyUI/manager_requirements.txt');
+    required.push('Hanzo Studio/manager_requirements.txt');
   }
 
   const missingPaths = [];

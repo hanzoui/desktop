@@ -1,29 +1,29 @@
 ---
-description: Create a new version of ComfyUI Desktop. It will update core, frontend, templates, and embedded docs. Updates compiled requirements with new templates / docs versions.
+description: Create a new version of Hanzo Desktop. It will update core, frontend, templates, and embedded docs. Updates compiled requirements with new templates / docs versions.
 ---
 
-Please update the version of ComfyUI to the latest:
+Please update the version of Hanzo Studio to the latest:
 
-1. Reference this PR as an example. https://github.com/Comfy-Org/desktop/commit/7cba9c25b95b30050dfd6864088ca91493bfd00b
-2. Go to [ComfyUI](https://github.com/comfyanonymous/ComfyUI/) Github repo and see what the latest Github Release is
+1. Reference this PR as an example. https://github.com/hanzoui/desktop/commit/7cba9c25b95b30050dfd6864088ca91493bfd00b
+2. Go to [Hanzo Studio](https://github.com/hanzoai/studio/) Github repo and see what the latest Github Release is
    - If there is {a semver tag (prefixed with `v`) without a release} OR {a `prerelease`} OR {a draft release} that is newer than the release marked as `latest`, AND this new version is a either a single major, minor, or patch version increment on the `latest` release, use that version instead of latest.
 3. Read the `requirements.txt` file from that release
-4. Update the ComfyUI version version in @package.json based on what is in the latest Github Release. If config.ComfyUI.optionalBranch is set in @package.json, change it to an empty string ("").
+4. Update the Hanzo Studio version version in @package.json based on what is in the latest Github Release. If config.Hanzo Studio.optionalBranch is set in @package.json, change it to an empty string ("").
 5. Update the frontend version in @package.json (`frontendVersion`) to the version specified in `requirements.txt`
    - If we currently have a higher version than what is in requirements.txt, DO NOT downgrade - continue and notify the human using warning emoji: ⚠️
-6. Update the versions in `scripts/core-requirements.patch` to match those in `requirements.txt` from the ComfyUI repo.
+6. Update the versions in `scripts/core-requirements.patch` to match those in `requirements.txt` from the Hanzo Studio repo.
    - Context: The patch is used to removes the frontend package, as the desktop app includes it in the build process instead.
-7. Update `assets/requirements/windows_nvidia.compiled` and `assets/requirements/windows_cpu.compiled`, and `assets/requirements/macos.compiled` accordingly. You just need to update the comfycomfyui-frontend-package, [comfyui-workflow-templates](https://github.com/Comfy-Org/workflow_templates), [comfyui-embedded-docs](https://github.com/Comfy-Org/embedded-docs) versions.
+7. Update `assets/requirements/windows_nvidia.compiled` and `assets/requirements/windows_cpu.compiled`, and `assets/requirements/macos.compiled` accordingly. You just need to update the comfyhanzo-studio-frontend-package, [hanzo-studio-workflow-templates](https://github.com/hanzoui/workflow-templates), [hanzo-studio-embedded-docs](https://github.com/hanzoui/embedded-docs) versions.
 8. Please make a PR by checking out a new branch from main, adding a commit message and then use GH CLI to create a PR.
    - Make the versions in the PR body as links to the relevant github releases - our tags prefix the semver with `v`, e.g. `v0.13.4`
      - Verify the links actually work - report any failure immediately to the human: ❌
    - Include only the PR body lines that were updated
-   - PR Title: Update ComfyUI core to v{VERSION}
+   - PR Title: Update Hanzo Studio core to v{VERSION}
    - PR Body:
      ## Updated versions
      | Component     | Version               |
      | ------------- | --------------------- |
-     | ComfyUI core  | COMFYUI_VERSION       |
+     | Hanzo Studio core  | COMFYUI_VERSION       |
      | Frontend      | FRONTEND_VERSION      |
      | Templates     | TEMPLATES_VERSION     |
      | Embedded docs | EMBEDDED_DOCS_VERSION |

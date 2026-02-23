@@ -1,10 +1,10 @@
 {
-  "name": "@comfyorg/comfyui-electron",
-  "productName": "ComfyUI",
+  "name": "@hanzoui/hanzo-studio-electron",
+  "productName": "Hanzo Studio",
   "repository": "github:comfy-org/electron",
   "copyright": "Copyright © 2024 Comfy Org",
   "version": "0.8.6",
-  "homepage": "https://comfy.org",
+  "homepage": "https://hanzo.ai",
   "description": "The best modular GUI to run AI diffusion models.",
   "main": ".vite/build/main.cjs",
   "packageManager": "yarn@4.5.0",
@@ -24,8 +24,8 @@
   "scripts": {
     "clean": "rimraf .vite dist out",
     "clean:uv": "rimraf assets/uv",
-    "clean:assets": "rimraf assets/.env assets/ComfyUI assets/python.tgz && yarn run clean:assets:git && yarn run clean:uv",
-    "clean:assets:git": "rimraf assets/ComfyUI/.git assets/ComfyUI/custom_nodes/ComfyUI-Manager/.git",
+    "clean:assets": "rimraf assets/.env assets/Hanzo Studio assets/python.tgz && yarn run clean:assets:git && yarn run clean:uv",
+    "clean:assets:git": "rimraf assets/Hanzo Studio/.git assets/Hanzo Studio/custom_nodes/Hanzo Manager/.git",
     "clean:slate": "yarn run clean && yarn run clean:assets && rimraf node_modules",
     "download:uv": "node scripts/downloadUV.js",
     "download-frontend": "node scripts/downloadFrontend.js",
@@ -40,7 +40,7 @@
     "make:nvidia": "yarn run make -- --nvidia",
     "notarize": "node debug/notarize.js",
     "package": "yarn run vite:compile && todesktop build --code-sign=false --async",
-    "patch:core:frontend": "node scripts/patchComfyUI.js requirements",
+    "patch:core:frontend": "node scripts/patchHanzo Studio.js requirements",
     "postinstall": "node .husky/install.mjs",
     "publish": "yarn run vite:compile && todesktop build",
     "publish:staging": "yarn run vite:compile && todesktop build --config=./todesktop.staging.json --async",
@@ -102,11 +102,11 @@
   "keywords": [],
   "author": {
     "name": "Comfy Org",
-    "email": "support@comfy.org"
+    "email": "support@hanzo.ai"
   },
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@comfyorg/desktop-ui": "0.0.6",
+    "@hanzoui/desktop-ui": "0.0.6",
     "@sentry/electron": "^5.4.0",
     "@sentry/vite-plugin": "^2.22.6",
     "@todesktop/runtime": "^1.6.4",

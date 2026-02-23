@@ -31,7 +31,7 @@ export class InstallWizard implements HasTelemetry {
 
   @trackEvent('install_flow:create_comfy_directories')
   public async install() {
-    // Setup the ComfyUI folder structure.
+    // Setup the Hanzo Studio folder structure.
     ComfyConfigManager.createComfyDirectories(this.basePath);
     this.initializeUserFiles();
 
@@ -42,14 +42,14 @@ export class InstallWizard implements HasTelemetry {
   }
 
   /**
-   * Copy user files from migration source to the new ComfyUI folder.
+   * Copy user files from migration source to the new Hanzo Studio folder.
    */
   public initializeUserFiles() {
     const shouldMigrateUserFiles = !!this.migrationSource && this.migrationItemIds.has('user_files');
     if (!shouldMigrateUserFiles) return;
 
     this.telemetry.track('migrate_flow:migrate_user_files');
-    // Copy user files from migration source to the new ComfyUI folder.
+    // Copy user files from migration source to the new Hanzo Studio folder.
     const srcUserFilesDir = path.join(this.migrationSource, 'user');
     const destUserFilesDir = path.join(this.basePath, 'user');
     if (path.resolve(srcUserFilesDir) !== path.resolve(destUserFilesDir)) {
@@ -111,12 +111,12 @@ export class InstallWizard implements HasTelemetry {
 
       yamlContent = {
         ...migrationServerConfigs,
-        comfyui_migration: migrationComfyConfig,
-        comfyui_desktop: comfyDesktopConfig,
+        hanzo_studio_migration: migrationComfyConfig,
+        hanzo_studio_desktop: comfyDesktopConfig,
       };
     } else {
       yamlContent = {
-        comfyui_desktop: comfyDesktopConfig,
+        hanzo_studio_desktop: comfyDesktopConfig,
       };
     }
 

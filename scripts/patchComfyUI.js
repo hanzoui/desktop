@@ -9,14 +9,14 @@ import fs from 'node:fs/promises';
  * Paths are relative to the project root.
  * @example
  * ```bash
- * node scripts/patchComfyUI.js frontend requirements
+ * node scripts/patchHanzo Studio.js frontend requirements
  * ```
  */
 const tasks = new Map([
   [
     'requirements',
     {
-      target: './assets/ComfyUI/requirements.txt',
+      target: './assets/Hanzo Studio/requirements.txt',
       patch: './scripts/core-requirements.patch',
     },
   ],
@@ -68,7 +68,7 @@ async function patchFile(targetPath, patchFilePath) {
       console.log('Patch applied successfully!');
     } else {
       throw new Error(
-        `ComfyUI core patching returned falsy value (${typeof patchedContent}) - .patch file probably requires update`
+        `Hanzo Studio core patching returned falsy value (${typeof patchedContent}) - .patch file probably requires update`
       );
     }
   } catch (error) {

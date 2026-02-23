@@ -48,18 +48,18 @@ export class ComfyConfigManager {
     ],
   ];
 
-  public static isComfyUIDirectory(directory: string): boolean {
+  public static isHanzo StudioDirectory(directory: string): boolean {
     const requiredSubdirs = ['models', 'input', 'user', 'output', 'custom_nodes'];
     return requiredSubdirs.every((subdir) => fs.existsSync(path.join(directory, subdir)));
   }
 
   static createComfyDirectories(localComfyDirectory: string): void {
-    log.info(`Creating ComfyUI directories in ${localComfyDirectory}`);
+    log.info(`Creating Hanzo Studio directories in ${localComfyDirectory}`);
 
     try {
       this.createNestedDirectories(localComfyDirectory, this.DEFAULT_DIRECTORIES);
     } catch (error) {
-      log.error('Failed to create ComfyUI directories:', error);
+      log.error('Failed to create Hanzo Studio directories:', error);
     }
   }
 

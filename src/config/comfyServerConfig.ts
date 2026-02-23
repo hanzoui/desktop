@@ -70,7 +70,7 @@ interface BasePathReadFailure {
 }
 
 /**
- * The ComfyServerConfig class is used to manage the configuration for the ComfyUI server.
+ * The ComfyServerConfig class is used to manage the configuration for the Hanzo Studio server.
  */
 export class ComfyServerConfig {
   // The name of the default config file.
@@ -98,7 +98,7 @@ export class ComfyServerConfig {
   } as const;
 
   /**
-   * The path to the extra_models_config.yaml file. The config file is used for ComfyUI core to determine search paths
+   * The path to the extra_models_config.yaml file. The config file is used for Hanzo Studio core to determine search paths
    * for models and custom nodes.
    */
   public static get configPath(): string {
@@ -125,7 +125,7 @@ export class ComfyServerConfig {
    */
   static generateConfigFileContent(modelPathConfigs: Record<string, ModelPaths>): string {
     const modelConfigYaml = yaml.stringify(modelPathConfigs, { lineWidth: -1 });
-    return `# ComfyUI extra_model_paths.yaml for ${process.platform}\n${modelConfigYaml}`;
+    return `# Hanzo Studio extra_model_paths.yaml for ${process.platform}\n${modelConfigYaml}`;
   }
 
   static async writeConfigFile(configFilePath: string, content: string): Promise<boolean> {
@@ -197,7 +197,7 @@ export class ComfyServerConfig {
 
       // Fallback to legacy yaml format, where we have everything under root 'comfyui'.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const base_path = config?.comfyui_desktop?.base_path ?? config?.comfyui?.base_path;
+      const base_path = config?.hanzo_studio_desktop?.base_path ?? config?.comfyui?.base_path;
       if (typeof base_path !== 'string') {
         log.warn(`Base path in YAML config was invalid: [${ComfyServerConfig.configPath}]`);
         return { status: 'invalid', path: base_path };
@@ -230,20 +230,20 @@ export class ComfyServerConfig {
       comfyDesktopConfig['base_path'] = basePath;
 
       return await ComfyServerConfig.createConfigFile(ComfyServerConfig.configPath, {
-        comfyui_desktop: comfyDesktopConfig,
+        hanzo_studio_desktop: comfyDesktopConfig,
       });
     }
     if (!parsedConfig) return false;
 
-    parsedConfig.comfyui_desktop ??= {};
-    parsedConfig.comfyui_desktop.base_path = basePath;
+    parsedConfig.hanzo_studio_desktop ??= {};
+    parsedConfig.hanzo_studio_desktop.base_path = basePath;
     const stringified = ComfyServerConfig.generateConfigFileContent(parsedConfig);
 
     return await ComfyServerConfig.writeConfigFile(ComfyServerConfig.configPath, stringified);
   }
 
   /**
-   * Patches extra_model_config.yaml to include the custom nodes bundled with the app (eg. ComfyUI-Manager).
+   * Patches extra_model_config.yaml to include the custom nodes bundled with the app (eg. Hanzo Manager).
    * @returns
    */
   public static async addAppBundledCustomNodesToConfig(): Promise<void> {
@@ -254,7 +254,7 @@ export class ComfyServerConfig {
     }
 
     if (!parsedConfig.desktop_extensions) {
-      const customNodesPath = path.join(getAppResourcesPath(), 'ComfyUI', 'custom_nodes');
+      const customNodesPath = path.join(getAppResourcesPath(), 'Hanzo Studio', 'custom_nodes');
       log.info(`Adding custom node extra_path to config ${customNodesPath}`);
       parsedConfig.desktop_extensions = { custom_nodes: customNodesPath };
       const stringified = ComfyServerConfig.generateConfigFileContent(parsedConfig);

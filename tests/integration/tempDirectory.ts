@@ -4,7 +4,7 @@ import path from 'node:path';
 import { addRandomSuffix, pathExists } from 'tests/shared/utils';
 
 export class TempDirectory implements AsyncDisposable {
-  readonly path: string = path.join(tmpdir(), addRandomSuffix('ComfyUI'));
+  readonly path: string = path.join(tmpdir(), addRandomSuffix('Hanzo Studio'));
 
   toString() {
     return this.path;

@@ -1,7 +1,7 @@
 import { readFile, rename, rm, writeFile } from 'node:fs/promises';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { getComfyUIAppDataPath, getDefaultInstallLocation, pathExists } from 'tests/shared/utils';
+import { getHanzo StudioAppDataPath, getDefaultInstallLocation, pathExists } from 'tests/shared/utils';
 
 import { LogFile } from '@/constants';
 import type { DesktopSettings } from '@/store/desktopSettings';
@@ -10,14 +10,14 @@ import { TempDirectory } from './tempDirectory';
 import { assertPlaywrightEnabled } from './testExtensions';
 
 export class TestEnvironment implements AsyncDisposable {
-  readonly appDataDir: string = getComfyUIAppDataPath();
+  readonly appDataDir: string = getHanzo StudioAppDataPath();
   readonly configPath: string = path.join(this.appDataDir, 'config.json');
 
   readonly installLocation: TempDirectory = new TempDirectory();
   readonly defaultInstallLocation: string = getDefaultInstallLocation();
 
   readonly mainLogPath: string = path.join(this.appDataDir, 'logs', LogFile.Main);
-  readonly comfyuiLogPath: string = path.join(this.appDataDir, 'logs', LogFile.ComfyUI);
+  readonly comfyuiLogPath: string = path.join(this.appDataDir, 'logs', LogFile.Hanzo Studio);
 
   #haveBrokenInstallPath = false;
   #haveBrokenVenv = false;

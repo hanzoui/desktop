@@ -54,7 +54,7 @@ export class AppWindow {
   public constructor(
     /** The URL of the development server for the Desktop UI. */
     private readonly devUrlOverride: string | undefined,
-    /** The URL of the ComfyUI development server (main app). */
+    /** The URL of the Hanzo Studio development server (main app). */
     private readonly frontendUrlOverride: string | undefined,
     /** Whether to automatically open dev tools on app start. */
     private readonly autoOpenDevTools: boolean
@@ -93,7 +93,7 @@ export class AppWindow {
       : {};
 
     this.window = new BrowserWindow({
-      title: 'ComfyUI',
+      title: 'Hanzo Studio',
       width: clampedWidth,
       height: clampedHeight,
       minWidth: 640,
@@ -162,7 +162,7 @@ export class AppWindow {
     this.send(IPC_CHANNELS.LOADING_PROGRESS, { status });
   }
 
-  public async loadComfyUI(serverArgs: ServerArgs) {
+  public async loadHanzo Studio(serverArgs: ServerArgs) {
     const host = serverArgs.listen === '0.0.0.0' ? 'localhost' : serverArgs.listen;
     const url = this.frontendUrlOverride ?? `http://${host}:${serverArgs.port}`;
     await this.window.loadURL(url);
@@ -338,7 +338,7 @@ export class AppWindow {
 
   /** Allows Electron popup windows for e.g. login/checkout popups. */
   #shouldOpenInPopup(url: string): boolean {
-    return url.startsWith('https://dreamboothy.firebaseapp.com/') || url.startsWith('https://checkout.comfy.org/');
+    return url.startsWith('https://dreamboothy.firebaseapp.com/') || url.startsWith('https://checkout.hanzo.ai/');
   }
 
   private setupAppEvents(): void {
@@ -407,7 +407,7 @@ export class AppWindow {
     );
     const tray = new Tray(trayImage);
 
-    tray.setToolTip('ComfyUI');
+    tray.setToolTip('Hanzo Studio');
     tray.on('double-click', () => this.show());
 
     // For Mac you can have a separate icon when you press.
@@ -464,12 +464,12 @@ export class AppWindow {
     const menu = Menu.getApplicationMenu();
     if (menu) {
       const aboutMenuItem = {
-        label: 'About ComfyUI',
+        label: 'About Hanzo Studio',
         click: () => {
           dialog
             .showMessageBox({
               title: 'About',
-              message: `ComfyUI v${app.getVersion()}`,
+              message: `Hanzo Studio v${app.getVersion()}`,
               detail: 'Created by Comfy Org\nCopyright © 2024',
               buttons: ['OK'],
             })
